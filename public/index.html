@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xtobe-2 — Clinic Inbox</title>
+<link rel="stylesheet" href="./ui.css">
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div class="logo">X</div>
+    <div>
+      <div class="clinic" id="clinicName">Clinic</div>
+      <div style="font-size:10px;color:var(--mut);letter-spacing:.12em" class="mono">CLINIC OPERATIONS</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-left:12px">
+      <span class="chip on"><span class="dot"></span>WhatsApp</span>
+      <span class="chip off" id="chipIg"><span class="dot"></span>Instagram</span>
+      <span class="chip off" id="chipFb"><span class="dot"></span>Facebook</span>
+    </div>
+    <div class="spacer"></div>
+    <a class="navlink on" href="./">Inbox</a>
+    <a class="navlink" href="./appointments">Appointments</a>
+    <a class="navlink" href="./content">Content studio</a>
+    <div class="kpi" style="margin-left:18px"><div class="v" id="kpiAppts">0</div><div class="l">TODAY</div></div>
+    <div class="kpi" style="margin-left:18px"><div class="v" id="kpiRev">AED 0</div><div class="l">BOOKED</div></div>
+  </div>
+  <div class="col" id="cola">
+    <div class="colhead" id="inboxHead">CONVERSATIONS</div>
+    <div id="convs"></div>
+  </div>
+  <div class="col" id="colc">
+    <div id="thread">
+      <div id="thead">
+        <div class="av" id="thAv" style="width:36px;height:36px;border-radius:11px">?</div>
+        <div><div class="nm" id="thName">Select a conversation</div>
+             <div class="sub" id="thSub">One inbox for every client message</div></div>
+      </div>
+      <div id="msgs"><div class="empty">Pick a client on the left.<br>Replies send via the official WhatsApp Cloud API.</div></div>
+      <div class="recv">
+        <textarea id="reply" placeholder="Type a reply...  (Enter to send)"></textarea>
+        <button id="sendBtn" disabled>Send</button>
+      </div>
+    </div>
+  </div>
+  <div class="col" id="colb">
+    <div class="colhead">CLIENT CARD</div>
+    <div id="clientCard"><div class="empty">No client selected.</div></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="./app.js"></script>
+</body>
+</html>
