@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: xtobe-business
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: npm install
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: WHATSAPP_VERIFY_TOKEN
+        generateValue: true
+      - key: AI_API_KEY
+        sync: false
