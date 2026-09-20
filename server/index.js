@@ -18,6 +18,8 @@ const leadsMod = require('./leads');
 const aigateMod = require('./aigate');
 const videoMod = require('./video');
 const brandMod = require('./brand');
+const security = require('./security');
+const { VITALIS, BreathEngine, PressureEngine, CarrierEngine, LongevityEngine, CredentialEngine, initVitalisSchema } = require('./vitalis-engine');
 
 loadEnv(ROOT);
 
@@ -48,17 +50,80 @@ const cfg = {
   aiModel: (process.env.AI_MODEL || 'gpt-4o-mini').trim(),
   clinicName: (process.env.CLINIC_NAME || 'Xtobe Demo Clinic').trim(),
   currency: (process.env.CLINIC_CURRENCY || 'AED').trim(),
+  whatsappAppSecret: (process.env.WHATSAPP_APP_SECRET || '').trim(),
 };
 
 const db = connect(cfg.dbFile);
 const app = express();
-app.use(express.json({ limit: '1mb' }));
+app.disable('x-powered-by');                       // don't advertise Express
+app.set('trust proxy', 1);                         // Render/CF terminate TLS → real client IP
+app.use(security.securityHeaders());               // XSS/clickjacking/MIME/HSTS headers
+app.use(express.json({ limit: '1mb', verify: security.captureRawBody }));
 
 /* rate-limit every API endpoint: 100 req/min per client (after body parse so
    x-clinic-id is available; OPTIONS preflights pass through for CORS) */
 if (shieldOn) app.use('/api', shield.rateLimiter);
 
 app.use(express.static(path.join(ROOT, 'public'), { extensions: ['html'] }));
+
+// Research page route
+app.get('/research', (req, res) => {
+  res.sendFile(path.join(ROOT, 'public', 'research.html'));
+});
+
+// ========== VITALIS RESEARCH ENGINE API ==========
+
+app.get('/api/vitalis', (req, res) => {
+  res.json(CredentialEngine.getCorporateSurface());
+});
+
+app.post('/api/vitalis/credential', (req, res) => {
+  const { credential } = req.body;
+  const result = CredentialEngine.validateCredential(credential);
+  res.json(result);
+});
+
+app.get('/api/vitalis/lineage', (req, res) => {
+  res.json(CredentialEngine.getResearchLineage());
+});
+
+app.get('/api/vitalis/breath/protocols', (req, res) => {
+  res.json(BreathEngine.protocols);
+});
+
+app.post('/api/vitalis/breath/match', (req, res) => {
+  const { state } = req.body;
+  if (!state) return res.status(400).json({ error: 'state required' });
+  const match = BreathEngine.matchProtocol(state);
+  res.json(match);
+});
+
+app.get('/api/vitalis/pressure/points', (req, res) => {
+  res.json(PressureEngine.points);
+});
+
+app.get('/api/vitalis/pressure/condition/:condition', (req, res) => {
+  const points = PressureEngine.getPointsForCondition(req.params.condition);
+  res.json(points);
+});
+
+app.get('/api/vitalis/carrier/frequencies', (req, res) => {
+  res.json(CarrierEngine.carriers);
+});
+
+app.get('/api/vitalis/carrier/state/:state', (req, res) => {
+  const carrier = CarrierEngine.getCarrierForState(req.params.state);
+  res.json(carrier);
+});
+
+app.get('/api/vitalis/longevity/protocols', (req, res) => {
+  res.json(LongevityEngine.protocols);
+});
+
+app.get('/api/vitalis/longevity/protocol/:id', (req, res) => {
+  const protocol = LongevityEngine.getProtocol(req.params.id);
+  res.json(protocol);
+});
 
 /* modules */
 const P = protect(db, cfg);
@@ -165,8 +230,8 @@ app.get(cfg.whatsappPath, (req, res) => {
   return res.status(403).json({ ok: false, error: 'verify_failed' });
 });
 
-/* Meta inbound */
-app.post(cfg.whatsappPath, (req, res) => {
+/* Meta inbound — signature-verified so attackers can't inject fake messages */
+app.post(cfg.whatsappPath, security.verifyWhatsAppSignature(cfg.whatsappAppSecret), (req, res) => {
   res.status(200).json({ ok: true });           // answer Meta immediately
   try {
     const items = wa.parseWebhook(req.body || {});
@@ -614,6 +679,13 @@ app.get('/brand.js', (req, res) => {
   const brand = Brand.getBranding((req.query.c || 'default'));
   res.type('application/javascript').send(Brand.applyScript(brand));
 });
+
+/* ------------------------------------------------------------------ *
+ * catch-alls — quiet 404 for unknown API routes + scrubbed errors
+ * (MUST be registered after all routes, before boot)
+ * ------------------------------------------------------------------ */
+app.use('/api', security.notFound());
+app.use(security.errorHandler());
 
 /* ------------------------------------------------------------------ *
  * boot

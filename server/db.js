@@ -143,11 +143,31 @@ CREATE TABLE IF NOT EXISTS video_projects (
   updated_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS vitalis_sessions (
+  id TEXT PRIMARY KEY,
+  participant_id TEXT NOT NULL,
+  protocol_type TEXT NOT NULL,
+  protocol_id TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  completed_at TEXT,
+  duration_seconds INTEGER,
+  state_before TEXT,
+  state_after TEXT,
+  measurements_before TEXT,
+  measurements_after TEXT,
+  measurements_deltas TEXT,
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'active'
+);
+
 CREATE INDEX IF NOT EXISTS idx_audit_time ON audit_log(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
 
 CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, id DESC);
 CREATE INDEX IF NOT EXISTS idx_appt_start ON appointments(start_at);
+CREATE INDEX IF NOT EXISTS idx_vitalis_sessions_participant ON vitalis_sessions(participant_id);
+CREATE INDEX IF NOT EXISTS idx_vitalis_sessions_status ON vitalis_sessions(status);
+CREATE INDEX IF NOT EXISTS idx_vitalis_sessions_created ON vitalis_sessions(created_at);
 `;
 
 /** Wrap node:sqlite so it looks like better-sqlite3 for our call sites. */
@@ -232,7 +252,17 @@ function connect(dbFile) {
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
   applyMigrations(db);
+  _db = db;  // Set singleton for getDb()
   return db;
 }
 
-module.exports = { connect, DRIVER, SCHEMA };
+// Singleton getDb for Vitalis engine (returns the connected db instance)
+let _db = null;
+function getDb() {
+  if (!_db) {
+    throw new Error('Database not connected. Call connect() first.');
+  }
+  return _db;
+}
+
+module.exports = { connect, DRIVER, SCHEMA, getDb };
