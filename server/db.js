@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS clinics (
   id TEXT PRIMARY KEY,
   name TEXT,
   plan TEXT DEFAULT 'growth',
+  branding TEXT,
   ai_creator_enabled INTEGER DEFAULT 0,
   ai_videos_used INTEGER DEFAULT 0,
   ai_videos_limit INTEGER DEFAULT 0,
@@ -203,12 +204,34 @@ function resolveDriver() {
 
 const DRIVER = resolveDriver();
 
+/**
+ * Idempotent column migrations for DBs created before a column existed.
+ * `CREATE TABLE IF NOT EXISTS` won't add columns to an existing table, so we
+ * ALTER TABLE only when the column is missing. Safe to run every boot.
+ */
+const MIGRATIONS = [
+  { table: 'clinics', column: 'branding', ddl: 'ALTER TABLE clinics ADD COLUMN branding TEXT' },
+];
+
+function applyMigrations(db) {
+  for (const m of MIGRATIONS) {
+    let cols = [];
+    try {
+      cols = db.prepare(`PRAGMA table_info(${m.table})`).all().map((c) => c.name);
+    } catch { continue; }
+    if (cols.length && !cols.includes(m.column)) {
+      try { db.exec(m.ddl); } catch { /* column may already exist (race) */ }
+    }
+  }
+}
+
 function connect(dbFile) {
   fs.mkdirSync(path.dirname(dbFile), { recursive: true });
   const db = DRIVER.open(dbFile);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  applyMigrations(db);
   return db;
 }
 

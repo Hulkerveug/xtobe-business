@@ -15,3 +15,8 @@ services:
         generateValue: true
       - key: AI_API_KEY
         sync: false
+      # anti-clone shield
+      - key: LICENSE_SECRET
+        generateValue: true
+      - key: ALLOWED_DOMAINS
+        sync: false

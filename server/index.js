@@ -21,6 +21,20 @@ const brandMod = require('./brand');
 
 loadEnv(ROOT);
 
+/* ------------------------------------------------------------------ *
+ * anti-clone shield (secure/antiCloneShield.js)
+ * Graceful: disabled until LICENSE_SECRET (>=32 chars) is set in env.
+ * When enabled: rate-limits /api, protects /api/brand with HMAC license
+ * tokens bound to whitelisted domains, and gates /brand.js by referer.
+ * ------------------------------------------------------------------ */
+let shield = null;
+try {
+  shield = require('../secure/antiCloneShield');
+} catch (e) {
+  console.warn(`[shield] disabled — ${e.message}`);
+}
+const shieldOn = Boolean(shield);
+
 const cfg = {
   root: ROOT,
   port: Number(process.env.PORT || 3000),
@@ -39,6 +53,11 @@ const cfg = {
 const db = connect(cfg.dbFile);
 const app = express();
 app.use(express.json({ limit: '1mb' }));
+
+/* rate-limit every API endpoint: 100 req/min per client (after body parse so
+   x-clinic-id is available; OPTIONS preflights pass through for CORS) */
+if (shieldOn) app.use('/api', shield.rateLimiter);
+
 app.use(express.static(path.join(ROOT, 'public'), { extensions: ['html'] }));
 
 /* modules */
@@ -545,6 +564,36 @@ app.use('/api/videos/files', express.static(Video.VIDEOS_DIR));
  * routes — white-label branding (each clinic = their own brand)
  * ------------------------------------------------------------------ */
 
+/*
+ * POST /api/brand/session — issue a domain-bound license token.
+ * Clinic is identified by body.clinic_id; the domain comes from
+ * Origin/Referer (or an explicit body.domain, validated against the
+ * whitelist, to cover same-origin calls where the browser omits Referer).
+ * The browser never sees LICENSE_SECRET; it only receives the derived token.
+ */
+if (shieldOn) {
+  app.post('/api/brand/session', (req, res) => {
+    const clinicId = String((req.body && req.body.clinic_id) || '').trim();
+    const rawHost =
+      shield._internal.hostFromHeader(req.headers.origin || req.headers.referer) ||
+      String((req.body && req.body.domain) || '').trim().toLowerCase();
+    const domain = shield._internal.matchedAllowedDomain(rawHost);
+
+    if (!clinicId || !domain) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const token = shield.generateLicenseToken(clinicId, domain);
+    res.json({ ok: true, token, clinic_id: clinicId, domain });
+  });
+
+  /* everything under /api/brand (except the session issuer above) needs a valid token */
+  app.use('/api/brand', (req, res, next) => {
+    if (req.method === 'OPTIONS') return next(); // CORS preflight
+    return shield.verifyLicense(req, res, next);
+  });
+}
+
 app.get('/api/brand', (req, res) => {
   res.json({ ok: true, brand: Brand.getBranding(req.query.clinic_id || 'default') });
 });
@@ -553,8 +602,15 @@ app.post('/api/brand', (req, res) => {
   res.json({ ok: true, brand: Brand.setBranding((req.body || {}).clinic_id || 'default', req.body || {}) });
 });
 
-/* branding injection script — every page includes this */
+/* branding injection script — only served to whitelisted domains (no-store) */
 app.get('/brand.js', (req, res) => {
+  if (shieldOn) {
+    const host = shield._internal.hostFromHeader(req.headers.referer || req.headers.origin);
+    if (!shield._internal.isAllowedHost(host)) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    res.set('Cache-Control', 'no-store');
+  }
   const brand = Brand.getBranding((req.query.c || 'default'));
   res.type('application/javascript').send(Brand.applyScript(brand));
 });
