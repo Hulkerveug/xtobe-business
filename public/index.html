@@ -120,6 +120,7 @@ section{padding:72px 0}
 .cmp tr:last-child td{border:none}
 .cmp .hl{color:var(--blue);font-weight:800;background:rgba(62,158,255,.06)}
 .cmp .wrap-x{overflow-x:auto}
+@media(max-width:860px){.roi-grid{grid-template-columns:1fr!important}}
 /* FOOTER */
 footer{border-top:1px solid var(--line);padding:44px 0;margin-top:40px}
 footer .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
@@ -170,14 +171,14 @@ footer a{color:var(--blue);text-decoration:none}
   <div class="shead">
     <div>
       <div class="k">THE PROBLEM → THE ENGINE</div>
-      <h2>Your clinic loses money <span class="dim">every night.</span></h2>
+      <h2>73% of clinic inquiries die<br><span class="dim">in the first 5 minutes.</span></h2>
     </div>
-    <div class="badge"><div class="dot"></div>3 ENGINES • ONE SYSTEM</div>
+    <div class="badge"><div class="dot"></div>UAE MARKET REALITY • 2024</div>
   </div>
   <div class="g3">
-    <div class="card"><div class="tag">01</div><div class="ic" style="background:rgba(62,158,255,.15)">🌙</div><h3>Never miss a lead</h3><p>A 10pm WhatsApp about pricing goes unanswered — by morning she booked with the competitor. <b>Every message from every channel lands in one inbox, instantly.</b> Nights, weekends, Ramadan hours.</p></div>
-    <div class="card"><div class="tag">02</div><div class="ic" style="background:rgba(52,211,153,.15)">📅</div><h3>No-shows drop 25–40%</h3><p>Automatic WhatsApp confirmations and reminders. A clinic doing 200 appointments recovers <b>AED 9,000–15,000/month</b> back into the chair.</p></div>
-    <div class="card"><div class="tag">03</div><div class="ic" style="background:rgba(251,191,36,.15)">🎬</div><h3>Content that books</h3><p>One old promo video becomes unlimited fresh Reels — <b>same face, new offers</b>, EN + AR captions, hashtags. 2 minutes, not 4 days.</p></div>
+    <div class="card"><div class="tag">01</div><div class="ic" style="background:rgba(62,158,255,.15)">🌙</div><h3>Messages at night, weekend, lunch</h3><p>Patient messages arrive when nobody's watching. <b>No auto-ack, no routing — they book with the competitor next door.</b> 73% lost after a 5-minute delay.</p></div>
+    <div class="card"><div class="tag">02</div><div class="ic" style="background:rgba(251,191,36,.15)">📱</div><h3>Staff on personal phones</h3><p>Staff using personal WhatsApp = <b>no handover, no audit, no history when staff leaves.</b> DHA risk with zero compliance trail.</p></div>
+    <div class="card"><div class="tag">03</div><div class="ic" style="background:rgba(52,211,153,.15)">🎬</div><h3>Content never happens</h3><p>Agencies take days and AED 500 per video. A content creator costs AED 5,500–7,500/month. <b>Your promos go stale while competitors post daily.</b></p></div>
   </div>
 
   <div class="big" style="margin-top:20px">
@@ -193,7 +194,8 @@ footer a{color:var(--blue);text-decoration:none}
     </div>
     <div class="body">
       <div class="flow">
-        <div class="fbox">💬 Client message</div><span class="farrow">→</span>
+        <div class="fbox">💬 Patient sends "hi"</div><span class="farrow">→</span>
+        <div class="fbox">⚡ /accept → PIN</div><span class="farrow">→</span>
         <div class="fbox">🤖 AI drafts</div><span class="farrow">→</span>
         <div class="fbox">👤 Staff approves</div><span class="farrow">→</span>
         <div class="fbox g">✅ Sent</div>
@@ -302,19 +304,106 @@ footer a{color:var(--blue);text-decoration:none}
 
   <div class="pilot" style="margin-top:22px">
     <div>
-      <h3>🎁 Launch pilot — first 3 clinics only</h3>
-      <p><b>Free setup + AED 299 first month.</b> Your WhatsApp connected, dashboard live with your real messages, first AI video generated — before you pay a dirham more.</p>
+      <h3>🎁 Launch pilot — 2 spots left</h3>
+      <p><b>Free setup (save AED 1,500–4,000) + AED 299 first month.</b> Full white-label dashboard with their real messages — their name, logo, colors. Cancel anytime after pilot, no lock-in. Staff approves everything.</p>
+      <p style="font-size:12px;margin-top:10px;opacity:.7">Conditions — light touch: logo use for case study · 15-min feedback call after week 1 · Google review if happy</p>
     </div>
     <a class="btn" href="https://wa.me/971563136305?text=Hi!%20I%20want%20to%20claim%20the%20Xtobe%20pilot%20spot%20for%20my%20clinic" target="_blank">Claim pilot spot →</a>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section>
+  <div class="shead">
+    <div>
+      <div class="k">ROI CALCULATOR • UAE CLINIC MATH</div>
+      <h2>AED 12k revenue vs <span class="dim">AED 499–1,999 cost.</span></h2>
+    </div>
+    <div class="badge"><div class="dot"></div>87–89% MARGINS VERIFIED</div>
+  </div>
+  <div class="big">
+    <div class="body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center" class="roi-grid">
+        <div>
+          <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--dim)">REVENUE / MONTH</div>
+          <div style="font-size:44px;font-weight:900;letter-spacing:-.03em;margin-top:8px">AED 12,000</div>
+          <div style="font-size:13px;color:var(--dim);margin-top:6px">30 bookings @ AED 400 — conservative</div>
+          <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><span>ELITE • AED 1,999</span><b style="color:var(--blue)">6x + 20 vids</b></div>
+              <div style="height:10px;border-radius:99px;background:rgba(255,255,255,.06)"><div style="width:17%;height:100%;border-radius:99px;background:var(--blue)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><span>GROWTH • AED 999</span><b style="color:var(--blue)">12x ROI</b></div>
+              <div style="height:10px;border-radius:99px;background:rgba(255,255,255,.06)"><div style="width:8.3%;height:100%;border-radius:99px;background:rgba(62,158,255,.7)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><span>STARTER • AED 499</span><b style="color:var(--live)">24x ROI</b></div>
+              <div style="height:10px;border-radius:99px;background:rgba(255,255,255,.06)"><div style="width:4.2%;height:100%;border-radius:99px;background:var(--live)"></div></div>
+            </div>
+          </div>
+          <div style="margin-top:24px;border-radius:14px;border:1px solid rgba(62,158,255,.35);background:rgba(62,158,255,.08);padding:16px;font-size:13.5px">
+            <b>1 patient = AED 400 · 1 AI video = AED 49 · 8x ROI</b> — use everywhere
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--dim)">WHAT THE NUMBERS SAY</div>
+          <div class="card" style="padding:18px"><b style="font-size:14px">24x ROI</b><p style="margin-top:5px">Starter: AED 12k revenue / AED 499 cost</p></div>
+          <div class="card" style="padding:18px"><b style="font-size:14px">12x ROI + content</b><p style="margin-top:5px">Growth: AI studio EN+AR, lead pipeline</p></div>
+          <div class="card" style="padding:18px"><b style="font-size:14px">6x + 20 AI videos</b><p style="margin-top:5px">Elite: Face Lock, extra AED 49 = pure profit</p></div>
+          <div class="card" style="padding:18px;border-color:rgba(52,211,153,.3)"><b style="font-size:14px;color:var(--live)">No hidden fees</b><p style="margin-top:5px">UAE hosting included • margins verified</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 MIN SETUP -->
+<section>
+  <div class="shead">
+    <div>
+      <div class="k">10 MIN SETUP • WHITE-LABEL READY</div>
+      <h2>How it works — <span class="dim">10 minutes.</span></h2>
+    </div>
+    <div class="badge"><div class="dot"></div>ONE API CALL PER CLINIC</div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="tag">2 MIN</div><div class="ic" style="background:rgba(62,158,255,.15)">🎨</div><h3>POST /api/brand</h3><p>Inject their identity — name, tagline, primary color, logo, WhatsApp. <b>Dashboard instantly shows theirs.</b></p></div>
+    <div class="card"><div class="tag">3 MIN</div><div class="ic" style="background:rgba(251,191,36,.15)">📲</div><h3>Add number to Meta</h3><p>Their number added to your Meta Business Manager. <b>Free: 1,000 conversations/month each.</b> Same app after App Review — FB + Instagram + Messenger, one review.</p></div>
+    <div class="card"><div class="tag">5 MIN</div><div class="ic" style="background:rgba(52,211,153,.15)">👻</div><h3>Their dashboard, your invisibility</h3><p>Bookings, studio, leads all show <b>their name/logo/colors</b>. Only tiny POWERED BY XTOBE in footer. <b>We connect, we never take.</b></p></div>
+  </div>
+</section>
+
+<!-- XTOBE VS TWILIO/WATI -->
+<section>
+  <div class="shead">
+    <div>
+      <div class="k">COMPARISON • WHY CLINICS CHOOSE XTOBE</div>
+      <h2>Xtobe vs Twilio/WATI <span class="dim">vs manual phones</span></h2>
+    </div>
+  </div>
+  <div class="cmp"><div class="wrap-x"><table>
+    <tr><th>FEATURE</th><th style="color:var(--blue)">XTOBE</th><th>TWILIO / WATI</th><th>MANUAL PHONES</th></tr>
+    <tr><td><b>Setup</b></td><td class="hl">AED 1,500 / 2,500 / 4,000</td><td>$$$ custom + dev time</td><td>0 but DHA risky</td></tr>
+    <tr><td><b>Monthly</b></td><td class="hl">AED 499 / 999 / 1,999</td><td>AED 1,500–3,000+</td><td>0</td></tr>
+    <tr><td><b>UAE hosting</b></td><td class="hl">Yes — Render 24/7</td><td>US-based</td><td>No</td></tr>
+    <tr><td><b>Masked phones</b></td><td class="hl">Yes + /accept consent proof</td><td>No masking</td><td>No</td></tr>
+    <tr><td><b>Consent proof</b></td><td class="hl">Yes (/accept → PIN)</td><td>Partial</td><td>No</td></tr>
+    <tr><td><b>AI videos</b></td><td class="hl">20/mo + Face Lock</td><td>—</td><td>—</td></tr>
+  </table></div></div>
+  <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px" class="g3">
+    <div class="card" style="padding:18px"><b style="font-size:13px">Content creator hire</b><p style="margin-top:4px">8–12 videos · AED 5,500–7,500/mo · working hours only</p></div>
+    <div class="card" style="padding:18px"><b style="font-size:13px">Media agency</b><p style="margin-top:4px">12–20 videos · AED 5,500–12,000/mo · 24–48h reply</p></div>
+    <div class="card" style="padding:18px;border-color:rgba(62,158,255,.4)"><b style="font-size:13px;color:var(--blue)">Xtobe Elite</b><p style="margin-top:4px">20 AI videos + 24/7 replies · AED 1,999/mo · Face Lock · AED 49 extra</p></div>
   </div>
 </section>
 
 <!-- TRUST -->
 <section>
   <div class="g3">
-    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🎭</div><h3>Numbers always masked</h3><p>Client phones show as <b>+971 5X XXX XXXX</b> in the interface — and are <b>AES-256 encrypted</b> in the database. Never sold, never leaked.</p></div>
-    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">📦</div><h3>Export anytime</h3><p>Your client data is yours — <b>export as file, delete on request</b>. When you leave, everything goes with you. No lock-in, ever.</p></div>
-    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🛡️</div><h3>UAE PDPL aligned</h3><p>Federal Decree-Law 45/2021: consent, audit log on every access, retention limits. <b>Enterprise-grade privacy</b> at clinic prices.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🎭</div><h3>Masked forever</h3><p>maskPhone never stores raw numbers — only masked in DB + logs. <b>AES-256 encrypted at rest + transit.</b> Patient can /unlink anytime → masked, counter -1.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🛡️</div><h3>PDPL UAE • DHA ready</h3><p>Official gateway live — graph.facebook.com v21.0, zero deps, verified webhooks, 41/41 tests green. <b>Consent proof (/accept → PIN) generates App Review evidence.</b> Full audit log, patient control.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🇦🇪</div><h3>UAE hosting — not US</h3><p>Render 24/7, not US like Twilio. Invisible infrastructure, visible accountability. No personal phones, no lock-in. <b>We connect. We never take.</b></p></div>
   </div>
 </section>
 
