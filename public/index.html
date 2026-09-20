@@ -3,53 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Xtobe-2 — Clinic Inbox</title>
-<link rel="stylesheet" href="./ui.css">
+<title>Xtobe Business — Every client message. Every post. One system.</title>
+<meta name="description" content="The complete operations platform for UAE beauty clinics: WhatsApp + Instagram inbox, AI bookings, AI video creator. From AED 499/month.">
+<link rel="manifest" href="/manifest.json">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#f5f5f7;color:#1d1d1f}
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid #e8e8ed;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+  .nav .brand{font-weight:900;font-size:18px;letter-spacing:-.02em}
+  .nav .brand span{color:#0a84ff}
+  .nav .links{display:flex;gap:22px;align-items:center}
+  .nav a{color:#3a3a3c;text-decoration:none;font-size:14px;font-weight:600}
+  .nav a:hover{color:#0a84ff}
+  .nav .cta{background:#0a84ff;color:#fff!important;padding:10px 20px;border-radius:12px;font-weight:700}
+  @media(max-width:760px){.nav .links a:not(.cta){display:none}}
+
+  .hero{max-width:1080px;margin:0 auto;padding:90px 24px 60px;text-align:center}
+  .hero .pill{display:inline-block;background:#e8f5e9;color:#1b5e20;font-size:12.5px;font-weight:800;padding:8px 18px;border-radius:99px;letter-spacing:.04em}
+  .hero h1{font-size:clamp(38px,6vw,64px);font-weight:900;letter-spacing:-.035em;line-height:1.05;margin-top:22px}
+  .hero h1 em{font-style:normal;color:#0a84ff}
+  .hero .sub{font-size:18px;color:#6e6e73;margin-top:20px;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.65}
+  .hero .btns{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+  .btn{border:none;border-radius:16px;padding:17px 34px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+  .btn.p{background:#0a84ff;color:#fff;box-shadow:0 10px 30px rgba(10,132,255,.35)}
+  .btn.p:hover{background:#0071e3}
+  .btn.g{background:#fff;color:#1d1d1f;border:1.5px solid #e8e8ed}
+  .hero .trust{margin-top:26px;font-size:13px;color:#86868b}
+
+  .logos{max-width:1080px;margin:0 auto;padding:0 24px 40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .logos span{background:#fff;border:1px solid #e8e8ed;border-radius:99px;padding:9px 18px;font-size:13px;font-weight:700;color:#6e6e73}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  section{padding:70px 0}
+  .kick{font-size:12px;font-weight:800;letter-spacing:.2em;color:#0a84ff;text-align:center}
+  h2.big{font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-.025em;text-align:center;margin-top:12px;line-height:1.15}
+  .sub2{text-align:center;color:#6e6e73;font-size:16px;margin-top:14px;line-height:1.6}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+  @media(max-width:860px){.grid3{grid-template-columns:1fr}}
+  .card{background:#fff;border-radius:24px;padding:30px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  .card .ic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .card h3{font-size:18px;font-weight:800;margin-top:16px}
+  .card p{font-size:14px;color:#6e6e73;margin-top:10px;line-height:1.65}
+
+  .dark{background:linear-gradient(160deg,#0e0e10,#1c1c22);border-radius:30px;color:#fff;padding:60px 40px;margin-top:70px}
+  .dark .kick{color:#0a84ff}
+  .dark h2.big{color:#fff}
+  .dark .sub2{color:rgba(255,255,255,.6)}
+  .dark .card{background:rgba(255,255,255,.07);box-shadow:none}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+  @media(max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:#fff;border-radius:22px;padding:28px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  .stat .n{font-size:38px;font-weight:900;letter-spacing:-.02em;color:#0a84ff}
+  .stat .l{font-size:13px;color:#86868b;font-weight:600;margin-top:6px}
+
+  .flow{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:40px;flex-wrap:wrap}
+  .fbox{background:#fff;border-radius:16px;padding:16px 22px;font-size:14px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.07)}
+  .farrow{color:#0a84ff;font-weight:900;font-size:20px}
+
+  .compare{margin-top:44px;background:#fff;border-radius:26px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.06);overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:560px}
+  th{padding:16px;font-size:13px;text-align:left;color:#86868b;font-weight:700;border-bottom:1px solid #f0f0f2}
+  td{padding:16px;font-size:14.5px;border-bottom:1px solid #f0f0f2}
+  tr:last-child td{border:none}
+  .hl{background:#f0f7ff;font-weight:800;color:#0a84ff}
+
+  .pilot{margin-top:70px;background:linear-gradient(135deg,#34c759,#30d158);border-radius:26px;padding:44px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .pilot h3{font-size:24px;font-weight:900}
+  .pilot p{font-size:15px;margin-top:10px;opacity:.92;max-width:560px;line-height:1.6}
+  .pilot .btn{background:#fff;color:#1d1d1f}
+
+  footer{margin-top:90px;background:#0e0e10;color:rgba(255,255,255,.55);padding:44px 24px;text-align:center;font-size:13px;line-height:2}
+  footer b{color:#fff}
+</style>
 </head>
 <body>
-<div id="app">
-  <div id="top">
-    <div class="logo">X</div>
-    <div>
-      <div class="clinic" id="clinicName">Clinic</div>
-      <div style="font-size:10px;color:var(--mut);letter-spacing:.12em" class="mono">CLINIC OPERATIONS</div>
-    </div>
-    <div style="display:flex;gap:8px;margin-left:12px">
-      <span class="chip on"><span class="dot"></span>WhatsApp</span>
-      <span class="chip off" id="chipIg"><span class="dot"></span>Instagram</span>
-      <span class="chip off" id="chipFb"><span class="dot"></span>Facebook</span>
-    </div>
-    <div class="spacer"></div>
-    <a class="navlink on" href="./">Inbox</a>
-    <a class="navlink" href="./appointments">Appointments</a>
-    <a class="navlink" href="./content">Content studio</a>
-    <div class="kpi" style="margin-left:18px"><div class="v" id="kpiAppts">0</div><div class="l">TODAY</div></div>
-    <div class="kpi" style="margin-left:18px"><div class="v" id="kpiRev">AED 0</div><div class="l">BOOKED</div></div>
-  </div>
-  <div class="col" id="cola">
-    <div class="colhead" id="inboxHead">CONVERSATIONS</div>
-    <div id="convs"></div>
-  </div>
-  <div class="col" id="colc">
-    <div id="thread">
-      <div id="thead">
-        <div class="av" id="thAv" style="width:36px;height:36px;border-radius:11px">?</div>
-        <div><div class="nm" id="thName">Select a conversation</div>
-             <div class="sub" id="thSub">One inbox for every client message</div></div>
-      </div>
-      <div id="msgs"><div class="empty">Pick a client on the left.<br>Replies send via the official WhatsApp Cloud API.</div></div>
-      <div class="recv">
-        <textarea id="reply" placeholder="Type a reply...  (Enter to send)"></textarea>
-        <button id="sendBtn" disabled>Send</button>
-      </div>
-    </div>
-  </div>
-  <div class="col" id="colb">
-    <div class="colhead">CLIENT CARD</div>
-    <div id="clientCard"><div class="empty">No client selected.</div></div>
+
+<div class="nav">
+  <div class="brand">xtobe<span>business</span></div>
+  <div class="links">
+    <a href="#features">Features</a>
+    <a href="#ai">AI Creator</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/studio">Live demo</a>
+    <a class="cta" href="https://wa.me/971543585550?text=Hi!%20I%20want%20the%20Xtobe%20pilot%20for%20my%20clinic" target="_blank">Book demo</a>
   </div>
 </div>
-<div id="toast"></div>
-<script src="./app.js"></script>
+
+<div class="hero">
+  <div class="pill">🇦🇪 Built for UAE beauty clinics · Dubai · Abu Dhabi · Sharjah</div>
+  <h1>Every client message.<br>Every post. <em>One system.</em></h1>
+  <div class="sub">WhatsApp, Instagram, Facebook — one inbox your staff actually uses. AI books appointments, reminds clients, and creates Reels with <b>your doctor's exact face</b>. From AED 499/month — less than a part-time receptionist's phone bill.</div>
+  <div class="btns">
+    <a class="btn p" href="https://wa.me/971543585550?text=Hi!%20I%20want%20the%20Xtobe%20pilot%20for%20my%20clinic" target="_blank">Claim pilot — free setup</a>
+    <a class="btn g" href="/studio">▶ See AI Studio live</a>
+  </div>
+  <div class="trust">Free setup + AED 299 first month · first 3 clinics only · no lock-in</div>
+</div>
+
+<div class="logos">
+  <span>💬 WhatsApp</span><span>📸 Instagram</span><span>📘 Facebook</span><span>📅 AI Bookings</span><span>🎬 AI Video Creator</span><span>🛡️ UAE PDPL data protection</span>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="kick">THE PROBLEM</div>
+    <h2 class="big">Your clinic loses money every night</h2>
+    <div class="sub2">A 10pm WhatsApp about hydrafacial pricing goes unanswered. By morning, she booked with the competitor who replied first.</div>
+    <div class="grid3">
+      <div class="card"><div class="ic" style="background:#E3F2FD">🌙</div><h3>Never miss a lead</h3><p>Every message from every channel lands in one inbox — instantly. Nights, weekends, Ramadan hours. Nothing slips.</p></div>
+      <div class="card"><div class="ic" style="background:#E8F5E9">📅</div><h3>No-shows drop 25–40%</h3><p>Automatic WhatsApp confirmations and reminders. A clinic doing 200 appointments recovers AED 9,000–15,000/month.</p></div>
+      <div class="card"><div class="ic" style="background:#F3E5F5">🎬</div><h3>Content that books</h3><p>One old promo video becomes unlimited fresh Reels — same face, new offers, English + Arabic captions, 2 minutes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ai">
+  <div class="wrap">
+    <div class="dark">
+      <div class="kick">AI VIDEO CREATOR</div>
+      <h2 class="big">Your doctor's face.<br>New offers every week.</h2>
+      <div class="sub2">Upload one old promotion video. The face stays exactly the same — the offer, text and captions change. Face Lock guarantees 100% identity preservation.</div>
+      <div class="grid3">
+        <div class="card"><div class="ic" style="background:rgba(52,199,89,.2)">🔒</div><h3>Face Lock</h3><p>The person in your video never changes. Only the offer text, captions and the cut. No awkward AI faces, ever.</p></div>
+        <div class="card"><div class="ic" style="background:rgba(10,132,255,.2)">🌍</div><h3>EN + AR captions</h3><p>Gulf Arabic written for Dubai's audience, with 15–18 hashtags tuned per treatment — hydrafacial to laser to fillers.</p></div>
+        <div class="card"><div class="ic" style="background:rgba(255,159,10,.2)">⚡</div><h3>2 minutes, not 4 days</h3><p>An agency takes days and AED 500 per video. Your front desk generates a fresh Reel before the client's coffee gets cold.</p></div>
+      </div>
+      <div style="margin-top:30px;text-align:center;background:rgba(10,132,255,.15);border:1px solid rgba(10,132,255,.4);border-radius:18px;padding:22px;font-size:15px;font-weight:700">
+        1 patient = AED 400 · 1 AI video = AED 49 · <span style="color:#0a84ff">8x ROI on every video</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kick">HOW IT WORKS</div>
+    <h2 class="big">AI assists. Your team decides.</h2>
+    <div class="flow">
+      <div class="fbox">💬 Client message</div><span class="farrow">→</span>
+      <div class="fbox">🤖 AI drafts</div><span class="farrow">→</span>
+      <div class="fbox">👤 Staff approves</div><span class="farrow">→</span>
+      <div class="fbox" style="background:#e8f5e9">✅ Sent</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">0</div><div class="l">missed messages</div></div>
+      <div class="stat"><div class="n">25–40%</div><div class="l">fewer no-shows</div></div>
+      <div class="stat"><div class="n">2 min</div><div class="l">per AI video</div></div>
+      <div class="stat"><div class="n">100%</div><div class="l">staff-approved</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kick">THE REAL COST</div>
+    <h2 class="big">Hire, agency, or Xtobe?</h2>
+    <div class="compare">
+      <table>
+        <tr><th></th><th>Content creator</th><th>Media agency</th><th class="hl">Xtobe Elite</th></tr>
+        <tr><td><b>Monthly</b></td><td>AED 5,500–7,500</td><td>AED 5,500–12,000</td><td class="hl">AED 1,999</td></tr>
+        <tr><td><b>Videos/month</b></td><td>8–12</td><td>12–20</td><td class="hl">20 AI + unlimited drafts</td></tr>
+        <tr><td><b>DM reply time</b></td><td>Working hours</td><td>24–48 hours</td><td class="hl">Instant, 24/7</td></tr>
+        <tr><td><b>Missed leads</b></td><td>Nights + weekends</td><td>Agency hours</td><td class="hl">Zero</td></tr>
+        <tr><td><b>Cancel</b></td><td>30-day notice</td><td>Monthly</td><td class="hl">Anytime, no lock-in</td></tr>
+      </table>
+    </div>
+    <div class="sub2" style="margin-top:22px">Save AED 42,000–120,000/year vs hiring or an agency.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pilot">
+      <div>
+        <h3>🎁 Launch pilot — first 3 clinics only</h3>
+        <p>Free setup + AED 299 for the first month. Your WhatsApp connected, your dashboard live with your real messages, your first AI video — before you pay a dirham more.</p>
+      </div>
+      <a class="btn" href="https://wa.me/971543585550?text=Hi!%20I%20want%20the%20Xtobe%20pilot%20for%20my%20clinic" target="_blank">Claim pilot spot</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>XTOBE BUSINESS</b> — every client message, every post, one system.<br>
+  Client numbers masked & encrypted (UAE PDPL) · Your data exports anytime · No lock-in<br>
+  Dubai, UAE · WhatsApp +971 54 358 5550 · <a href="/pricing" style="color:#0a84ff">Pricing</a> · <a href="/studio" style="color:#0a84ff">AI Studio</a><br>
+  We connect. We never take.
+</footer>
+
 </body>
 </html>
