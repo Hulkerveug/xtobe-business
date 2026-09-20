@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xtobe-2 — Content Studio</title>
+<link rel="stylesheet" href="./ui.css">
+<link rel="stylesheet" href="./pages.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="top2">
+    <div class="logo">X</div>
+    <div class="clinic" id="clinicName" style="font-weight:800">Clinic</div>
+    <div class="spacer"></div>
+    <a class="navlink" href="./">Inbox</a>
+    <a class="navlink" href="./appointments">Appointments</a>
+    <a class="navlink on" href="./content">Content studio</a>
+  </div>
+  <h1>Content studio</h1>
+  <div class="datebar">
+    <span class="lbl" style="margin-top:0">AI engine</span>
+    <span class="mode-pill off" id="modePill">offline templates</span>
+  </div>
+  <div class="row2">
+    <div class="card" style="margin:0">
+      <div class="lbl" style="margin-top:0">GENERATE</div>
+      <input id="topic" placeholder="Topic — e.g. HydraFacial glow in 30 min">
+      <select id="kind">
+        <option value="reel">Instagram Reel script</option>
+        <option value="post">Feed post</option>
+        <option value="story">3-frame Story</option>
+        <option value="calendar">7-day calendar</option>
+      </select>
+      <button class="bigbtn" id="gen">Generate ✨</button>
+      <div class="small" style="margin-top:8px">Caption in English + Arabic, Dubai-tuned hashtags, hook and shot list. Set AI_API_KEY in .env to go live.</div>
+      <div id="result"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="lbl" style="margin-top:0">POST QUEUE</div>
+      <div id="queue"><div class="empty" style="padding:24px 10px">Queue is empty. Generate something, then schedule it.</div></div>
+      <div class="lbl">SCHEDULE SELECTED</div>
+      <input id="sched" type="datetime-local">
+      <button class="bigbtn" id="queueBtn" style="background:var(--panel2);color:#fff;border:1px solid var(--line)">Add to queue</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="./content.js"></script>
+</body>
+</html>

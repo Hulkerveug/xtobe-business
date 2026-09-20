@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xtobe-2 — Appointments</title>
+<link rel="stylesheet" href="./ui.css">
+<link rel="stylesheet" href="./pages.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="top2">
+    <div class="logo">X</div>
+    <div class="clinic" id="clinicName" style="font-weight:800">Clinic</div>
+    <div class="spacer"></div>
+    <a class="navlink" href="./">Inbox</a>
+    <a class="navlink on" href="./appointments">Appointments</a>
+    <a class="navlink" href="./content">Content studio</a>
+  </div>
+  <h1>Today's bookings</h1>
+  <div class="datebar">
+    <button id="prev">← Prev day</button>
+    <input type="date" id="day">
+    <button id="next">Next day →</button>
+    <div class="spacer"></div>
+    <span class="chip on"><span class="dot"></span><span id="dayCount">0 bookings</span></span>
+  </div>
+  <div class="row2">
+    <div class="card" style="margin:0">
+      <div class="lbl" style="margin-top:0">SCHEDULE</div>
+      <div id="slots"><div class="empty" style="padding:24px 10px">No bookings this day.</div></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="lbl" style="margin-top:0">BOOK AN APPOINTMENT</div>
+      <input id="fName" placeholder="Client name">
+      <input id="fPhone" placeholder="WhatsApp number e.g. 9715XXXXXXXX">
+      <select id="fService">
+        <option>Signature facial</option><option>HydraFacial</option><option>Botox consultation</option>
+        <option>Laser hair removal</option><option>IV drip therapy</option><option>Massage 60 min</option>
+      </select>
+      <input id="fTime" type="time" value="17:00">
+      <input id="fPrice" type="number" placeholder="Price AED" min="0">
+      <button class="bigbtn" id="book">Book + send WhatsApp confirmation</button>
+      <div class="small" style="margin-top:8px;color:var(--mut);font-size:11px">Confirmation is sent automatically once WhatsApp is configured. No cold messaging.</div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="./appointments.js"></script>
+</body>
+</html>
