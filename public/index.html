@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XTOBE BUSINESS — Clinic Growth Engine</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0B0D">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0A0B0D;--card:rgba(255,255,255,.04);--card2:rgba(255,255,255,.03);--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.12);--txt:#fff;--dim:rgba(255,255,255,.4);--dim2:rgba(255,255,255,.3);--blue:#3E9EFF;--blue2:#2E7FFF;--live:#34d399;--amber:#fbbf24}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,11,13,.75);border-bottom:1px solid var(--line)}
+nav .in{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.brand .x{width:30px;height:30px;border-radius:9px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.brand span{color:var(--blue)}
+nav a{color:var(--dim);text-decoration:none;font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;transition:.2s}
+nav a:hover{color:#fff;background:rgba(255,255,255,.06)}
+nav .cta{background:#fff;color:#000;font-weight:700}
+nav .cta:hover{background:rgba(255,255,255,.9);color:#000}
+@media(max-width:800px){nav .hidem{display:none}}
+/* HERO */
+.hero{position:relative;padding:80px 0 40px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse at center,rgba(62,158,255,.12),transparent 65%);pointer-events:none}
+.hero .kick{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:99px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08)}
+.hero .kick .dot{width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 1.6s infinite}
+.hero .kick span{font-size:11px;letter-spacing:.14em;color:var(--live)}
+@keyframes pulse{50%{opacity:.35}}
+.hero h1{font-size:clamp(38px,6.5vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.02;margin-top:26px}
+.hero h1 .dim{color:var(--dim);font-weight:400}
+.hero .sub{font-size:17px;color:var(--dim);margin-top:20px;max-width:620px;line-height:1.65}
+.hero .sub b{color:#fff}
+.btns{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+.btn{border:none;border-radius:99px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:.2s}
+.btn.w{background:#fff;color:#000}
+.btn.w:hover{background:rgba(255,255,255,.88);transform:translateY(-1px)}
+.btn.b{background:var(--blue2);color:#fff}
+.btn.b:hover{background:var(--blue)}
+.btn.o{background:transparent;color:#fff;border:1px solid var(--line2)}
+.btn.o:hover{border-color:rgba(255,255,255,.3)}
+.hero .meta{margin-top:28px;display:flex;gap:20px;flex-wrap:wrap}
+.hero .meta div{font-size:12px;color:var(--dim2)}
+.hero .meta b{color:#fff}
+/* TICKER */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;overflow:hidden;white-space:nowrap;margin-top:50px}
+.ticker .track{display:inline-block;animation:tick 30s linear infinite}
+.ticker span{font-size:11px;letter-spacing:.16em;color:var(--dim);margin:0 28px}
+.ticker span b{color:var(--blue)}
+@keyframes tick{to{transform:translateX(-50%)}}
+/* SECTIONS */
+section{padding:72px 0}
+.shead{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:34px}
+.shead .k{font-size:11px;letter-spacing:.18em;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.shead h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:10px}
+.shead h2 .dim{color:var(--dim);font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:99px;background:rgba(62,158,255,.12);border:1px solid rgba(62,158,255,.3);font-size:11px;color:#8AB8FF;font-family:'JetBrains Mono',monospace}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--blue)}
+/* GRID CARDS */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:860px){.g3,.g2{grid-template-columns:1fr}}
+.card{border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));backdrop-filter:blur(20px);padding:26px;transition:.25s;position:relative}
+.card:hover{border-color:var(--line2);transform:translateY(-2px)}
+.card .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:21px}
+.card h3{font-size:16.5px;font-weight:700;margin-top:15px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--dim);margin-top:9px;line-height:1.65}
+.card p b{color:rgba(255,255,255,.85)}
+.card .tag{position:absolute;top:24px;right:24px;font-size:10px;letter-spacing:.14em;color:var(--dim2);font-family:'JetBrains Mono',monospace}
+/* BIG FEATURE */
+.big{border-radius:28px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));backdrop-filter:blur(24px);overflow:hidden}
+.big .top{padding:26px 30px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.big .body{padding:30px}
+/* FLOW */
+.flow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:36px 0}
+.fbox{padding:14px 22px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-size:13.5px;font-weight:700}
+.fbox.g{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08);color:var(--live)}
+.farrow{color:var(--blue);font-size:20px;font-weight:900;animation:slide 2s infinite}
+@keyframes slide{50%{transform:translateX(4px)}}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+.stat{border-radius:20px;border:1px solid var(--line);background:var(--card2);padding:24px;text-align:center}
+.stat .n{font-size:34px;font-weight:900;letter-spacing:-.03em;color:var(--blue)}
+.stat .l{font-size:11px;letter-spacing:.1em;color:var(--dim);margin-top:6px;font-family:'JetBrains Mono',monospace}
+/* PRICING */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+@media(max-width:900px){.plans{grid-template-columns:1fr}}
+.plan{border-radius:26px;border:1px solid var(--line);background:var(--card2);backdrop-filter:blur(20px);padding:30px;display:flex;flex-direction:column;position:relative;transition:.25s}
+.plan:hover{border-color:var(--line2)}
+.plan.hot{border-color:var(--blue);background:linear-gradient(180deg,rgba(62,158,255,.1),rgba(62,158,255,.02));box-shadow:0 20px 60px rgba(62,158,255,.15)}
+.plan .pop{position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:5px 16px;border-radius:99px;background:var(--blue);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;font-family:'JetBrains Mono',monospace}
+.plan h3{font-size:19px;font-weight:800}
+.plan .who{font-size:12px;color:var(--dim);margin-top:4px}
+.plan .price{margin-top:20px}
+.plan .price .amt{font-size:38px;font-weight:900;letter-spacing:-.03em}
+.plan .price .per{font-size:12px;color:var(--dim)}
+.plan .price .set{font-size:12px;color:var(--dim);margin-top:5px;font-family:'JetBrains Mono',monospace}
+.plan ul{list-style:none;margin-top:22px;flex:1}
+.plan li{font-size:13px;padding:7px 0;display:flex;gap:10px;color:rgba(255,255,255,.75);align-items:flex-start}
+.plan li::before{content:'✓';color:var(--live);font-weight:800;flex-shrink:0}
+.plan li.no{color:rgba(255,255,255,.25)}
+.plan li.no::before{content:'—';color:rgba(255,255,255,.2)}
+.plan .btn{width:100%;justify-content:center;margin-top:22px}
+/* PILOT */
+.pilot{border-radius:26px;border:1px solid rgba(52,211,153,.3);background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.03));padding:40px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.pilot h3{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.pilot p{font-size:14px;color:var(--dim);margin-top:9px;max-width:540px;line-height:1.65}
+.pilot p b{color:#fff}
+.pilot .btn{background:var(--live);color:#000}
+/* COMPARE TABLE */
+.cmp{border-radius:24px;border:1px solid var(--line);overflow:hidden}
+.cmp table{width:100%;border-collapse:collapse;min-width:560px}
+.cmp th{padding:16px 20px;font-size:11px;letter-spacing:.12em;text-align:left;color:var(--dim);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.02)}
+.cmp td{padding:15px 20px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+.cmp tr:last-child td{border:none}
+.cmp .hl{color:var(--blue);font-weight:800;background:rgba(62,158,255,.06)}
+.cmp .wrap-x{overflow-x:auto}
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:44px 0;margin-top:40px}
+footer .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer .l{font-size:12px;color:var(--dim2);line-height:2}
+footer b{color:#fff}
+footer a{color:var(--blue);text-decoration:none}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;padding:12px 22px;border-radius:99px;background:#fff;color:#000;font-size:12.5px;font-weight:600;display:none;align-items:center;gap:9px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+
+<nav><div class="in">
+  <div class="brand"><div class="x">X</div>xtobe<span>business</span></div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <a href="#engine" class="hidem">Engine</a>
+    <a href="#ai" class="hidem">AI Creator</a>
+    <a href="#pricing" class="hidem">Pricing</a>
+    <a href="/studio" class="hidem">Live demo</a>
+    <a class="cta" href="https://wa.me/971563136305?text=Hi!%20I%20want%20the%20Xtobe%20pilot%20for%20my%20clinic" target="_blank">Book pilot →</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="kick"><div class="dot"></div><span>LIVE • CLINIC GROWTH ENGINE • UAE</span></div>
+  <h1>Every client message.<br>Every post. <span class="dim">One engine.</span></h1>
+  <p class="sub">WhatsApp, Instagram, Facebook — <b>one inbox</b> your staff actually uses. AI books appointments, kills no-shows, and creates Reels with <b>your doctor's exact face</b>. From <b>AED 499/month</b>.</p>
+  <div class="btns">
+    <a class="btn w" href="https://wa.me/971563136305?text=Hi!%20I%20want%20the%20Xtobe%20pilot%20for%20my%20clinic" target="_blank">Claim pilot — free setup</a>
+    <a class="btn o" href="/studio">▶ See AI Studio live</a>
+  </div>
+  <div class="meta">
+    <div>🇦🇪 <b>Dubai</b> · Abu Dhabi · Sharjah</div>
+    <div>🔒 UAE <b>PDPL</b> protected</div>
+    <div>✋ Staff approves <b>everything</b></div>
+    <div>$0 · <b>No lock-in</b></div>
+  </div>
+  <div class="ticker"><div class="track">
+    <span>💬 WHATSAPP</span><span>📸 INSTAGRAM</span><span>📘 FACEBOOK</span><span>📅 AI BOOKINGS</span><span>🎬 AI VIDEO CREATOR</span><span>🔒 FACE LOCK</span><span>🇦🇪 EN + AR CAPTIONS</span><span>🛡️ PDPL DATA PROTECTION</span><span>💬 WHATSAPP</span><span>📸 INSTAGRAM</span><span>📘 FACEBOOK</span><span>📅 AI BOOKINGS</span><span>🎬 AI VIDEO CREATOR</span><span>🔒 FACE LOCK</span><span>🇦🇪 EN + AR CAPTIONS</span><span>🛡️ PDPL DATA PROTECTION</span>
+  </div></div>
+</div>
+
+<!-- ENGINE -->
+<section id="engine">
+  <div class="shead">
+    <div>
+      <div class="k">THE PROBLEM → THE ENGINE</div>
+      <h2>Your clinic loses money <span class="dim">every night.</span></h2>
+    </div>
+    <div class="badge"><div class="dot"></div>3 ENGINES • ONE SYSTEM</div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="tag">01</div><div class="ic" style="background:rgba(62,158,255,.15)">🌙</div><h3>Never miss a lead</h3><p>A 10pm WhatsApp about pricing goes unanswered — by morning she booked with the competitor. <b>Every message from every channel lands in one inbox, instantly.</b> Nights, weekends, Ramadan hours.</p></div>
+    <div class="card"><div class="tag">02</div><div class="ic" style="background:rgba(52,211,153,.15)">📅</div><h3>No-shows drop 25–40%</h3><p>Automatic WhatsApp confirmations and reminders. A clinic doing 200 appointments recovers <b>AED 9,000–15,000/month</b> back into the chair.</p></div>
+    <div class="card"><div class="tag">03</div><div class="ic" style="background:rgba(251,191,36,.15)">🎬</div><h3>Content that books</h3><p>One old promo video becomes unlimited fresh Reels — <b>same face, new offers</b>, EN + AR captions, hashtags. 2 minutes, not 4 days.</p></div>
+  </div>
+
+  <div class="big" style="margin-top:20px">
+    <div class="top">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:36px;height:36px;border-radius:11px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">✋</div>
+        <div>
+          <div class="k mono" style="font-size:10px;letter-spacing:.16em;color:var(--dim)">THE GOLDEN RULE</div>
+          <div style="font-size:15px;font-weight:700;margin-top:2px">AI assists. Your team decides. Always.</div>
+        </div>
+      </div>
+      <div class="badge"><div class="dot"></div>100% STAFF-APPROVED</div>
+    </div>
+    <div class="body">
+      <div class="flow">
+        <div class="fbox">💬 Client message</div><span class="farrow">→</span>
+        <div class="fbox">🤖 AI drafts</div><span class="farrow">→</span>
+        <div class="fbox">👤 Staff approves</div><span class="farrow">→</span>
+        <div class="fbox g">✅ Sent</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">0</div><div class="l">MISSED MESSAGES</div></div>
+        <div class="stat"><div class="n">-40%</div><div class="l">NO-SHOWS</div></div>
+        <div class="stat"><div class="n">2min</div><div class="l">PER AI VIDEO</div></div>
+        <div class="stat"><div class="n">8x</div><div class="l">ROI PER VIDEO</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI CREATOR -->
+<section id="ai">
+  <div class="shead">
+    <div>
+      <div class="k">AI VIDEO CREATOR • FACE LOCK</div>
+      <h2>Your doctor's face.<br><span class="dim">New offers every week.</span></h2>
+    </div>
+    <div class="badge"><div class="dot"></div>IDENTITY PRESERVED 100%</div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ic" style="background:rgba(52,211,153,.15)">🔒</div><h3>Face Lock</h3><p>The person in your video <b>never changes</b>. Only the offer text, captions and the cut. No awkward AI faces, ever.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(62,158,255,.15)">🌍</div><h3>EN + AR captions</h3><p>Gulf Arabic written for Dubai's audience + English, with <b>15–18 hashtags</b> tuned per treatment — hydrafacial to laser to fillers.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(251,191,36,.15)">⚡</div><h3>2 minutes, not 4 days</h3><p>An agency takes days and AED 500 per video. Your front desk generates a fresh Reel <b>before the coffee gets cold</b>.</p></div>
+  </div>
+  <div style="margin-top:20px;border-radius:20px;border:1px solid rgba(62,158,255,.35);background:rgba(62,158,255,.08);padding:24px;text-align:center">
+    <span class="mono" style="font-size:12px;letter-spacing:.1em;color:#8AB8FF">1 PATIENT = AED 400 · 1 AI VIDEO = AED 49 · </span><b style="font-size:15px">8x ROI ON EVERY VIDEO</b>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section>
+  <div class="shead">
+    <div>
+      <div class="k">THE REAL COST</div>
+      <h2>Hire, agency, <span class="dim">or Xtobe?</span></h2>
+    </div>
+  </div>
+  <div class="cmp"><div class="wrap-x"><table>
+    <tr><th></th><th>CONTENT CREATOR</th><th>MEDIA AGENCY</th><th style="color:var(--blue)">XTOBE ELITE</th></tr>
+    <tr><td><b>Monthly</b></td><td>AED 5,500–7,500</td><td>AED 5,500–12,000</td><td class="hl">AED 1,999</td></tr>
+    <tr><td><b>Videos/month</b></td><td>8–12</td><td>12–20</td><td class="hl">20 AI + unlimited drafts</td></tr>
+    <tr><td><b>DM reply time</b></td><td>Working hours</td><td>24–48 hours</td><td class="hl">Instant · 24/7</td></tr>
+    <tr><td><b>Missed leads</b></td><td>Nights + weekends</td><td>Agency hours</td><td class="hl">Zero</td></tr>
+    <tr><td><b>Cancel</b></td><td>30-day notice</td><td>Monthly</td><td class="hl">Anytime · no lock-in</td></tr>
+  </table></div></div>
+  <p style="text-align:center;color:var(--dim);font-size:14px;margin-top:18px">Save <b style="color:#fff">AED 42,000–120,000/year</b> vs hiring or an agency.</p>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="shead">
+    <div>
+      <div class="k">PACKAGES • AED ONLY</div>
+      <h2>Simple pricing. <span class="dim">Locked, honest.</span></h2>
+    </div>
+    <div class="badge"><div class="dot"></div>NO HIDDEN FEES</div>
+  </div>
+  <div class="plans">
+    <div class="plan">
+      <h3>Starter</h3><div class="who">Small salons & home businesses</div>
+      <div class="price"><div class="amt">499</div><div class="per">AED / month</div><div class="set">+ AED 1,500 one-time setup</div></div>
+      <ul>
+        <li>One inbox — WhatsApp + Instagram</li>
+        <li>AI booking + reminders</li>
+        <li>2 staff accounts</li>
+        <li>Client cards with history</li>
+        <li>WhatsApp support</li>
+        <li class="no">AI content studio</li>
+        <li class="no">AI Video Creator (addon AED 399)</li>
+      </ul>
+      <a class="btn o" href="https://wa.me/971563136305?text=Hi!%20Interested%20in%20Xtobe%20Starter%20for%20my%20clinic" target="_blank">Start on WhatsApp</a>
+    </div>
+    <div class="plan hot">
+      <div class="pop">MOST POPULAR</div>
+      <h3>Growth</h3><div class="who">Busy clinics & medspas</div>
+      <div class="price"><div class="amt">999</div><div class="per">AED / month</div><div class="set">+ AED 2,500 one-time setup</div></div>
+      <ul>
+        <li>Everything in Starter</li>
+        <li>AI content studio (EN + AR)</li>
+        <li>Reel scripts from your videos</li>
+        <li>Lead pipeline dashboard</li>
+        <li>5 staff accounts</li>
+        <li>Monthly strategy call</li>
+        <li class="no">AI Video Creator (addon AED 399)</li>
+      </ul>
+      <a class="btn b" href="https://wa.me/971563136305?text=Hi!%20Interested%20in%20Xtobe%20Growth%20for%20my%20clinic" target="_blank">Book a live demo</a>
+    </div>
+    <div class="plan">
+      <h3>Elite</h3><div class="who">Multi-branch & premium clinics</div>
+      <div class="price"><div class="amt">1,999</div><div class="per">AED / month</div><div class="set">+ AED 4,000 one-time setup</div></div>
+      <ul>
+        <li>Everything in Growth</li>
+        <li>🎬 AI Video Creator — 20 videos/mo</li>
+        <li>Same doctor's face, new offers weekly</li>
+        <li>Extra videos AED 49 each</li>
+        <li>Posting calendar + boost</li>
+        <li>Unlimited staff + dedicated manager</li>
+      </ul>
+      <a class="btn o" href="https://wa.me/971563136305?text=Hi!%20Interested%20in%20Xtobe%20Elite%20for%20my%20clinic" target="_blank">Talk to us</a>
+    </div>
+  </div>
+
+  <div class="pilot" style="margin-top:22px">
+    <div>
+      <h3>🎁 Launch pilot — first 3 clinics only</h3>
+      <p><b>Free setup + AED 299 first month.</b> Your WhatsApp connected, dashboard live with your real messages, first AI video generated — before you pay a dirham more.</p>
+    </div>
+    <a class="btn" href="https://wa.me/971563136305?text=Hi!%20I%20want%20to%20claim%20the%20Xtobe%20pilot%20spot%20for%20my%20clinic" target="_blank">Claim pilot spot →</a>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section>
+  <div class="g3">
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🎭</div><h3>Numbers always masked</h3><p>Client phones show as <b>+971 5X XXX XXXX</b> in the interface — and are <b>AES-256 encrypted</b> in the database. Never sold, never leaked.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">📦</div><h3>Export anytime</h3><p>Your client data is yours — <b>export as file, delete on request</b>. When you leave, everything goes with you. No lock-in, ever.</p></div>
+    <div class="card"><div class="ic" style="background:rgba(255,255,255,.08)">🛡️</div><h3>UAE PDPL aligned</h3><p>Federal Decree-Law 45/2021: consent, audit log on every access, retention limits. <b>Enterprise-grade privacy</b> at clinic prices.</p></div>
+  </div>
+</section>
+
+</div>
+
+<footer><div class="in">
+  <div class="l">
+    <b>XTOBE BUSINESS</b> — Clinic Growth Engine<br>
+    Dubai, UAE · WhatsApp <a href="https://wa.me/971563136305" target="_blank">+971 56 313 6305</a><br>
+    We connect. We never take.
+  </div>
+  <div class="l" style="text-align:right">
+    <a href="/pricing">Pricing</a> · <a href="/studio">AI Studio</a> · <a href="/dashboard">Dashboard</a><br>
+    <span class="mono" style="font-size:10px;letter-spacing:.14em">© XTOBE • REACH NOT CAPTURE • BUILT FOR UAE</span>
+  </div>
+</div></footer>
+
+<div class="toast" id="toast">✓</div>
+
+<script>
+function toast(m){const t=document.getElementById('toast');t.textContent='✓ '+m;t.style.display='flex';setTimeout(()=>t.style.display='none',2200)}
+document.querySelectorAll('.btn.w,.btn.b').forEach(b=>b.addEventListener('click',()=>toast('Opening WhatsApp — pilot team ready')));
+</script>
+</body>
+</html>
