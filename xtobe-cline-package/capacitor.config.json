@@ -1,0 +1,12 @@
+{
+  "appId": "com.hulkerveug.xtobe",
+  "appName": "XTOBE",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0e0e10"
+    }
+  }
+}
