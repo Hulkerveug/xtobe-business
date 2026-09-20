@@ -13,10 +13,15 @@ const { loadEnv } = require('./env');
 const { connect } = require('./db');
 const wa = require('./whatsapp');
 const content = require('./content');
+const protect = require('./protect');
+const leadsMod = require('./leads');
+const aigateMod = require('./aigate');
+const videoMod = require('./video');
 
 loadEnv(ROOT);
 
 const cfg = {
+  root: ROOT,
   port: Number(process.env.PORT || 3000),
   dbFile: path.resolve(ROOT, process.env.DB_FILE || 'data/xtobe2.db'),
   whatsappToken: (process.env.WHATSAPP_TOKEN || '').trim(),
@@ -34,6 +39,12 @@ const db = connect(cfg.dbFile);
 const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(ROOT, 'public'), { extensions: ['html'] }));
+
+/* modules */
+const P = protect(db, cfg);
+const Leads = leadsMod(db);
+const Gate = aigateMod(db);
+const Video = videoMod(db, cfg);
 
 const nowIso = () => new Date().toISOString();
 const todayIso = () => new Date().toISOString().slice(0, 10);
@@ -401,6 +412,132 @@ app.get('/api/stats', (req, res) => {
     },
   });
 });
+
+/* ------------------------------------------------------------------ *
+ * routes — data protection (PDPL): export / erase / consent / audit
+ * ------------------------------------------------------------------ */
+
+app.get('/api/privacy/status', (req, res) => res.json({ ok: true, ...P.status() }));
+
+app.get('/api/privacy/export/:clientId', (req, res) => {
+  const data = P.exportClient(Number(req.params.clientId));
+  if (!data) return res.status(404).json({ ok: false, error: 'not_found' });
+  res.setHeader('Content-Disposition', `attachment; filename="client-${req.params.clientId}-data.json"`);
+  res.json(data);
+});
+
+app.delete('/api/privacy/erase/:clientId', (req, res) => {
+  res.json(P.eraseClient(Number(req.params.clientId), (req.body || {}).reason));
+});
+
+app.post('/api/privacy/consent/:clientId', (req, res) => {
+  const b = req.body || {};
+  res.json(P.setConsent(Number(req.params.clientId), !!b.granted, b.source));
+});
+
+app.post('/api/privacy/purge', (req, res) => {
+  res.json(P.purgeOld((req.body || {}).days));
+});
+
+app.get('/api/privacy/audit', (req, res) => {
+  const rows = db.prepare('SELECT * FROM audit_log ORDER BY id DESC LIMIT 100').all();
+  res.json({ ok: true, count: rows.length, entries: rows });
+});
+
+/* ------------------------------------------------------------------ *
+ * routes — leads pipeline
+ * ------------------------------------------------------------------ */
+
+app.get('/api/leads', (req, res) => {
+  res.json({ ok: true, leads: Leads.listLeads(req.query) });
+});
+
+app.post('/api/leads', (req, res) => {
+  try { res.json({ ok: true, lead: Leads.createLead(req.body || {}) }); }
+  catch (e) { res.status(400).json({ ok: false, error: e.message }); }
+});
+
+app.patch('/api/leads/:id', (req, res) => {
+  const b = req.body || {};
+  try {
+    if (b.status) return res.json({ ok: true, lead: Leads.updateStatus(req.params.id, b.status) });
+    if (b.note) return res.json({ ok: true, notes: Leads.addNote(req.params.id, b.note) });
+    res.status(400).json({ ok: false, error: 'need status or note' });
+  } catch (e) { res.status(400).json({ ok: false, error: e.message }); }
+});
+
+app.get('/api/leads/stats', (req, res) => res.json({ ok: true, ...Leads.stats() }));
+
+/* ------------------------------------------------------------------ *
+ * routes — AI Creator gate + billing (LOCKED pricing, see .roorules)
+ * ------------------------------------------------------------------ */
+
+app.get('/api/ai/check-access', (req, res) => {
+  res.json({ ok: true, ...Gate.checkAccess(req.query.clinic_id || 'default') });
+});
+
+app.post('/api/ai/confirm-extra', (req, res) => {
+  res.json({ ok: true, ...Gate.confirmExtra((req.body || {}).clinic_id || 'default') });
+});
+
+app.post('/api/ai/activate-addon', (req, res) => {
+  res.json({ ok: true, ...Gate.activateAddon((req.body || {}).clinic_id || 'default') });
+});
+
+app.post('/api/ai/set-plan', (req, res) => {
+  try { res.json({ ok: true, ...Gate.setPlan((req.body || {}).clinic_id || 'default', (req.body || {}).plan) }); }
+  catch (e) { res.status(400).json({ ok: false, error: e.message }); }
+});
+
+/* ------------------------------------------------------------------ *
+ * routes — AI Video Creator (approval-gated)
+ * ------------------------------------------------------------------ */
+
+app.post('/api/videos/upload', (req, res) => {
+  // metadata-only registration; actual file lands via static upload handler below
+  const b = req.body || {};
+  if (!b.source_file) return res.status(400).json({ ok: false, error: 'source_file required' });
+  let gate;
+  try { gate = Gate.beforeGenerate(b.clinic_id || 'default'); }
+  catch (e) {
+    return res.status(403).json({ ok: false, code: e.code || 'UPGRADE_REQUIRED', error: e.message, access: e.access });
+  }
+  if (gate.needs_payment) {
+    return res.status(402).json({ ok: false, code: 'PAYMENT_REQUIRED', amount_aed: 49, access: gate.access });
+  }
+  const proj = Video.createProject(b);
+  res.json({ ok: true, project: proj, gate });
+});
+
+app.post('/api/videos/:id/generate', async (req, res) => {
+  const proj = Video.getProject(req.params.id);
+  if (!proj) return res.status(404).json({ ok: false, error: 'not_found' });
+  let gate;
+  try { gate = Gate.beforeGenerate(proj.clinic_id || 'default'); }
+  catch (e) {
+    return res.status(403).json({ ok: false, code: e.code || 'UPGRADE_REQUIRED', error: e.message, access: e.access });
+  }
+  if (gate.needs_payment) {
+    return res.status(402).json({ ok: false, code: 'PAYMENT_REQUIRED', amount_aed: 49, access: gate.access });
+  }
+  const result = await Video.runPipeline(req.params.id);
+  if (result.ok) Gate.recordUsage(proj.clinic_id || 'default');
+  res.json(result);
+});
+
+app.post('/api/videos/:id/approve', (req, res) => {
+  res.json({ ok: true, project: Video.approve(req.params.id, (req.body || {}).staff) });
+});
+
+app.post('/api/videos/:id/reject', (req, res) => {
+  res.json({ ok: true, project: Video.reject(req.params.id, (req.body || {}).reason) });
+});
+
+app.get('/api/videos', (req, res) => {
+  res.json({ ok: true, projects: Video.listProjects(req.query) });
+});
+
+app.use('/api/videos/files', express.static(Video.VIDEOS_DIR));
 
 /* ------------------------------------------------------------------ *
  * boot

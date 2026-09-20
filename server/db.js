@@ -76,6 +76,75 @@ CREATE TABLE IF NOT EXISTS settings (
   value TEXT
 );
 
+CREATE TABLE IF NOT EXISTS audit_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  action TEXT NOT NULL,
+  target TEXT,
+  actor TEXT DEFAULT 'system',
+  detail TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS clinics (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  plan TEXT DEFAULT 'growth',
+  ai_creator_enabled INTEGER DEFAULT 0,
+  ai_videos_used INTEGER DEFAULT 0,
+  ai_videos_limit INTEGER DEFAULT 0,
+  ai_extra_count INTEGER DEFAULT 0,
+  usage_month TEXT,
+  created_at TEXT,
+  updated_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS leads (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  phone_masked TEXT,
+  phone_hash TEXT,
+  source TEXT DEFAULT 'website',
+  service TEXT,
+  notes TEXT,
+  channel TEXT DEFAULT 'whatsapp',
+  status TEXT DEFAULT 'new',
+  created_at TEXT NOT NULL,
+  updated_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS lead_notes (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT NOT NULL,
+  note TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS video_projects (
+  id TEXT PRIMARY KEY,
+  clinic_id TEXT DEFAULT 'default',
+  name TEXT,
+  status TEXT DEFAULT 'uploaded',
+  source_file TEXT,
+  offer_text TEXT,
+  style TEXT DEFAULT 'luxury',
+  language TEXT DEFAULT 'en',
+  voice TEXT DEFAULT 'female',
+  script TEXT,
+  caption_en TEXT,
+  caption_ar TEXT,
+  hashtags TEXT,
+  output_file TEXT,
+  thumb_file TEXT,
+  approved_by TEXT,
+  approved_at TEXT,
+  error TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_time ON audit_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+
 CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, id DESC);
 CREATE INDEX IF NOT EXISTS idx_appt_start ON appointments(start_at);
 `;
