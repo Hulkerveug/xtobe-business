@@ -17,6 +17,7 @@ const protect = require('./protect');
 const leadsMod = require('./leads');
 const aigateMod = require('./aigate');
 const videoMod = require('./video');
+const brandMod = require('./brand');
 
 loadEnv(ROOT);
 
@@ -45,6 +46,7 @@ const P = protect(db, cfg);
 const Leads = leadsMod(db);
 const Gate = aigateMod(db);
 const Video = videoMod(db, cfg);
+const Brand = brandMod(db);
 
 const nowIso = () => new Date().toISOString();
 const todayIso = () => new Date().toISOString().slice(0, 10);
@@ -538,6 +540,24 @@ app.get('/api/videos', (req, res) => {
 });
 
 app.use('/api/videos/files', express.static(Video.VIDEOS_DIR));
+
+/* ------------------------------------------------------------------ *
+ * routes — white-label branding (each clinic = their own brand)
+ * ------------------------------------------------------------------ */
+
+app.get('/api/brand', (req, res) => {
+  res.json({ ok: true, brand: Brand.getBranding(req.query.clinic_id || 'default') });
+});
+
+app.post('/api/brand', (req, res) => {
+  res.json({ ok: true, brand: Brand.setBranding((req.body || {}).clinic_id || 'default', req.body || {}) });
+});
+
+/* branding injection script — every page includes this */
+app.get('/brand.js', (req, res) => {
+  const brand = Brand.getBranding((req.query.c || 'default'));
+  res.type('application/javascript').send(Brand.applyScript(brand));
+});
 
 /* ------------------------------------------------------------------ *
  * boot
