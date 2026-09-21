@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XTOBE — Business Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050507;--card:rgba(255,255,255,.04);--line:rgba(255,255,255,.08);--txt:#fff;--dim:rgba(255,255,255,.4);--purple:#7a5cff;--blue:#3E9EFF;--live:#34d399;--gold:#d4a574;--amber:#fbbf24}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;padding-bottom:80px}
+.mono{font-family:'JetBrains Mono',monospace}
+.back{position:fixed;top:20px;left:20px;color:var(--dim);text-decoration:none;font-size:13px;font-weight:600;padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);transition:.2s;z-index:200}
+.back:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px;text-align:center}
+.sub{font-size:13px;color:var(--dim);margin-bottom:28px;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:700px;margin:0 auto 28px}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border-radius:16px;border:1px solid var(--line);background:var(--card);padding:18px;text-align:center}
+.stat .n{font-size:28px;font-weight:900;letter-spacing:-.03em}
+.stat .n.green{color:var(--live)}
+.stat .n.blue{color:var(--blue)}
+.stat .n.purple{color:var(--purple)}
+.stat .n.amber{color:var(--amber)}
+.stat .l{font-size:9px;letter-spacing:.14em;color:var(--dim);margin-top:6px;font-family:'JetBrains Mono',monospace}
+.section{max-width:700px;margin:0 auto 28px}
+.section h2{font-size:12px;letter-spacing:.16em;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-bottom:12px;text-transform:uppercase}
+.routes{display:flex;flex-direction:column;gap:8px}
+.route{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:12px}
+.route .path{color:var(--dim);font-family:'JetBrains Mono',monospace}
+.route .status{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700}
+.route .status.ok{color:var(--live)}
+.route .status.pending{color:var(--amber)}
+.numbers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:600px){.numbers{grid-template-columns:1fr}}
+.number-card{border-radius:16px;border:1px solid var(--line);background:var(--card);padding:18px}
+.number-card .label{font-size:10px;letter-spacing:.14em;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.number-card .value{font-size:18px;font-weight:800;margin-top:6px}
+.number-card .sub{font-size:11px;color:var(--dim);margin-top:4px}
+.provision{border-radius:16px;border:1px solid rgba(212,165,116,.2);background:linear-gradient(135deg,rgba(212,165,116,.08),rgba(212,165,116,.02));padding:20px;text-align:center}
+.provision h3{font-size:16px;font-weight:700;color:var(--gold)}
+.provision p{font-size:12px;color:var(--dim);margin-top:8px}
+.btn{border:none;border-radius:12px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#c9956a);color:#000}
+.btn.gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,165,116,.3)}
+/* Mobile Nav */
+.mobile-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;align-items:center;padding:12px 0;background:rgba(5,5,7,.95);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--dim);font-size:10px;font-weight:600;transition:.2s;flex:1}
+.nav-item:hover{color:#fff}
+.nav-icon{font-size:20px}
+.nav-label{font-size:9px;letter-spacing:.06em}
+.nav-center .nav-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:22px;margin-top:-20px;box-shadow:0 8px 30px rgba(122,92,255,.4)}
+.nav-center .nav-label{margin-top:4px}
+</style>
+</head>
+<body>
+<a href="index.html" class="back">← Back</a>
+<h1>Business Dashboard</h1>
+<p class="sub">Virtual numbers, Vitalis inbox, appointments, analytics</p>
+
+<div class="stats">
+  <div class="stat"><div class="n green">1</div><div class="l">CONVERSATIONS</div></div>
+  <div class="stat"><div class="n blue">0</div><div class="l">TODAY</div></div>
+  <div class="stat"><div class="n purple">AED 0</div><div class="l">BOOKED</div></div>
+  <div class="stat"><div class="n amber">0</div><div class="l">UNREAD</div></div>
+</div>
+
+<div class="section">
+  <h2>Active Routes</h2>
+  <div class="routes">
+    <div class="route"><span class="path">/api/health</span><span class="status ok">● 200 OK · 23ms</span></div>
+    <div class="route"><span class="path">/api/vitalis</span><span class="status ok">● 200 OK · 41ms</span></div>
+    <div class="route"><span class="path">/api/webhooks/whatsapp</span><span class="status ok">● 200 OK · 12ms</span></div>
+    <div class="route"><span class="path">/api/inbox</span><span class="status ok">● 200 OK</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Virtual Numbers</h2>
+  <div class="numbers">
+    <div class="number-card">
+      <div class="label">UAE NUMBER</div>
+      <div class="value">+971 5X XXX XXXX</div>
+      <div class="sub">WhatsApp · SMS · Calls</div>
+    </div>
+    <div class="number-card">
+      <div class="label">US NUMBER</div>
+      <div class="value">+1 (415) XXX-XXXX</div>
+      <div class="sub">WhatsApp · SMS</div>
+    </div>
+    <div class="number-card">
+      <div class="label">UK NUMBER</div>
+      <div class="value">+44 7XXX XXXXXX</div>
+      <div class="sub">WhatsApp · SMS</div>
+    </div>
+    <div class="number-card">
+      <div class="label">INDIA NUMBER</div>
+      <div class="value">+91 98XXX XXXXX</div>
+      <div class="sub">WhatsApp · SMS</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="provision">
+    <h3>Provision New Number</h3>
+    <p>Get a UAE, US, UK, or India virtual number for your clinic. Works with WhatsApp Cloud API.</p>
+    <button class="btn gold" onclick="alert('Available after payment — Meta verification required')">Provision Number</button>
+  </div>
+</div>
+
+<!-- Mobile Nav Bar -->
+<div class="mobile-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">💬</span><span class="nav-label">Chats</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">📞</span><span class="nav-label">Calls</span></a>
+  <a href="ai-core.html" class="nav-item nav-center"><span class="nav-icon">⚡</span><span class="nav-label">Core</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">◫</span><span class="nav-label">Wallet</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">◍</span><span class="nav-label">Me</span></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XTOBE — Memory Vault</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050507;--card:rgba(255,255,255,.04);--line:rgba(255,255,255,.08);--txt:#fff;--dim:rgba(255,255,255,.4);--purple:#7a5cff;--blue:#3E9EFF;--live:#34d399}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px;padding-bottom:80px}
+.mono{font-family:'JetBrains Mono',monospace}
+.back{position:fixed;top:20px;left:20px;color:var(--dim);text-decoration:none;font-size:13px;font-weight:600;padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);transition:.2s;z-index:200}
+.back:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px;text-align:center}
+.sub{font-size:13px;color:var(--dim);margin-bottom:24px;text-align:center}
+.search-box{width:100%;max-width:500px;margin:0 auto 20px;display:flex;gap:10px}
+.search-box input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;color:#fff;padding:12px 16px;font-family:inherit;font-size:14px;outline:none}
+.search-box input:focus{border-color:var(--blue)}
+.search-box input::placeholder{color:var(--dim)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.filter-btn{padding:6px 14px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--dim);font-size:11px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.filter-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
+.filter-btn.active{background:rgba(122,92,255,.15);border-color:var(--purple);color:var(--purple)}
+.memories{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;max-width:900px;margin:0 auto}
+.memory-card{border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));padding:18px;transition:.2s}
+.memory-card:hover{border-color:var(--blue)}
+.memory-card .tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:9px;letter-spacing:.1em;font-family:'JetBrains Mono',monospace;background:rgba(122,92,255,.12);color:var(--purple);border:1px solid rgba(122,92,255,.25);margin-bottom:10px}
+.memory-card .tag.blue{background:rgba(62,158,255,.12);color:#8AB8FF;border-color:rgba(62,158,255,.25)}
+.memory-card .tag.green{background:rgba(52,211,153,.12);color:var(--live);border-color:rgba(52,211,153,.25)}
+.memory-card h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.memory-card p{font-size:12px;color:var(--dim);line-height:1.55}
+.memory-card .meta{margin-top:10px;font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.empty{text-align:center;color:var(--dim);font-size:13px;padding:40px}
+/* Mobile Nav */
+.mobile-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;align-items:center;padding:12px 0;background:rgba(5,5,7,.95);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--dim);font-size:10px;font-weight:600;transition:.2s;flex:1}
+.nav-item:hover{color:#fff}
+.nav-icon{font-size:20px}
+.nav-label{font-size:9px;letter-spacing:.06em}
+.nav-center .nav-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:22px;margin-top:-20px;box-shadow:0 8px 30px rgba(122,92,255,.4)}
+.nav-center .nav-label{margin-top:4px}
+</style>
+</head>
+<body>
+<a href="index.html" class="back">← Back</a>
+<h1>Memory Vault</h1>
+<p class="sub">Local-first memory — searchable, filterable, yours</p>
+<div class="search-box">
+  <input type="text" id="search" placeholder="Search memories..." oninput="filterMemories()">
+</div>
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all')">ALL</button>
+  <button class="filter-btn" onclick="setFilter('identity')">IDENTITY</button>
+  <button class="filter-btn" onclick="setFilter('philosophy')">PHILOSOPHY</button>
+  <button class="filter-btn" onclick="setFilter('project')">PROJECTS</button>
+  <button class="filter-btn" onclick="setFilter('research')">RESEARCH</button>
+</div>
+<div class="memories" id="memories"></div>
+<div class="empty" id="empty" style="display:none">No memories found</div>
+
+<script>
+const memories = [
+  { tag: 'IDENTITY', tagClass: '', title: 'Core Identity', text: 'Nishan Ramanathan — Dubai mortgage broker, 12 yrs banking+telecom. Tanglish, act first, wants LIVE.', date: '2026-09-20' },
+  { tag: 'PHILOSOPHY', tagClass: '', title: 'Core Principle', text: 'Help others first, then our needs. Universe made as surprise. Only person is u to trust.', date: '2026-09-20' },
+  { tag: 'PROJECT', tagClass: 'blue', title: 'xtobe Business', text: 'B2B clinic growth engine. LOCKED pricing: 1,500+499 / 2,500+999 / 4,000+1,999. AI Creator addon 399=8 vids.', date: '2026-09-20' },
+  { tag: 'PROJECT', tagClass: 'blue', title: 'MindMirror', text: '5 Hz whole-body resonance. 9 Agasthiyar mantras. Floor Theory. Proof-of-work chain. Vitalis engine.', date: '2026-09-20' },
+  { tag: 'RESEARCH', tagClass: 'green', title: '5Hz Resonance', text: 'IOP 2026 meta-analysis, 6+ in vivo studies. Whole-body mechanical resonance carrier independent of mass and height.', date: '2026-09-20' },
+  { tag: 'RESEARCH', tagClass: 'green', title: 'Floor Theory', text: 'Focus cannot be forced by removing the brain\'s grounding frequency. Must be earned by restoring the carrier.', date: '2026-09-20' },
+  { tag: 'PROJECT', tagClass: 'blue', title: 'xtobe Connector', text: 'Consumer bridge app. Telegram bot @xtobe_bridge_bot. PIN 77A9-BRIDGE-X. Bridge to home.', date: '2026-09-20' },
+  { tag: 'IDENTITY', tagClass: '', title: 'Contact', text: 'WhatsApp +971 56 313 6305 (business) · +971 54 358 5550 (old) · nishanedd3@gmail.com', date: '2026-09-20' },
+  { tag: 'PHILOSOPHY', tagClass: '', title: 'Ideology', text: 'Revenge→protection. Poor connected at 0 cost. Mothers respected. Youngsters off drugs.', date: '2026-09-20' },
+  { tag: 'PROJECT', tagClass: 'blue', title: 'SpaceMaker', text: 'Local-first AI context persistence. Python-based. Local git only, no remote.', date: '2026-09-20' },
+];
+
+let currentFilter = 'all';
+
+function renderMemories() {
+  const container = document.getElementById('memories');
+  const empty = document.getElementById('empty');
+  const search = document.getElementById('search').value.toLowerCase();
+  const filtered = memories.filter(m => {
+    const matchesFilter = currentFilter === 'all' || m.tag.toLowerCase() === currentFilter;
+    const matchesSearch = m.title.toLowerCase().includes(search) || m.text.toLowerCase().includes(search);
+    return matchesFilter && matchesSearch;
+  });
+  container.innerHTML = filtered.map(m => `
+    <div class="memory-card">
+      <span class="tag ${m.tagClass}">${m.tag}</span>
+      <h3>${m.title}</h3>
+      <p>${m.text}</p>
+      <div class="meta">${m.date}</div>
+    </div>
+  `).join('');
+  empty.style.display = filtered.length ? 'none' : 'block';
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderMemories();
+}
+
+function filterMemories() { renderMemories(); }
+
+renderMemories();
+</script>
+
+<!-- Mobile Nav Bar -->
+<div class="mobile-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">💬</span><span class="nav-label">Chats</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">📞</span><span class="nav-label">Calls</span></a>
+  <a href="ai-core.html" class="nav-item nav-center"><span class="nav-icon">⚡</span><span class="nav-label">Core</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">◫</span><span class="nav-label">Wallet</span></a>
+  <a href="#" class="nav-item"><span class="nav-icon">◍</span><span class="nav-label">Me</span></a>
+</div>
+</body>
+</html>

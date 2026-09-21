@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XTOBE — Command Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050507;--card:rgba(255,255,255,.04);--line:rgba(255,255,255,.08);--txt:#fff;--dim:rgba(255,255,255,.4);--purple:#7a5cff;--blue:#3E9EFF;--live:#34d399;--gold:#d4a574}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:700px;width:100%;text-align:center}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+.brand .x{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
+.brand span{background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h1{font-size:clamp(30px,5vw,48px);font-weight:900;letter-spacing:-.04em;line-height:1.05}
+h1 .dim{color:var(--dim);font-weight:400}
+.sub{font-size:15px;color:var(--dim);margin-top:14px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+@media(max-width:600px){.apps{grid-template-columns:1fr}}
+.app-card{border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));backdrop-filter:blur(20px);padding:24px 18px;transition:.25s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.app-card:hover{border-color:var(--purple);transform:translateY(-3px);box-shadow:0 16px 50px rgba(122,92,255,.2)}
+.app-card .icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+.app-card .icon.core{background:rgba(122,92,255,.15)}
+.app-card .icon.memory{background:rgba(62,158,255,.15)}
+.app-card .icon.dashboard{background:rgba(52,211,153,.15)}
+.app-card h3{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.app-card .desc{font-size:11.5px;color:var(--dim);margin-top:8px;line-height:1.55}
+.app-card .tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:9px;letter-spacing:.12em;margin-top:12px;font-family:'JetBrains Mono',monospace}
+.app-card .tag.core{background:rgba(122,92,255,.12);color:var(--purple);border:1px solid rgba(122,92,255,.25)}
+.app-card .tag.memory{background:rgba(62,158,255,.12);color:#8AB8FF;border:1px solid rgba(62,158,255,.25)}
+.app-card .tag.dashboard{background:rgba(52,211,153,.12);color:var(--live);border:1px solid rgba(52,211,153,.25)}
+.status{margin-top:36px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.status div{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
+.status b{color:var(--live)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="x">X</div>
+    <div style="font-weight:800;font-size:20px;letter-spacing:-.02em">xtobe<span>business</span></div>
+  </div>
+  <h1>Command <span class="dim">Hub</span></h1>
+  <p class="sub">Local-first AI system. Three modules, one home. No cloud required.</p>
+  <div class="apps">
+    <a href="ai-core.html" class="app-card">
+      <div class="icon core">🧠</div>
+      <h3>AI Core</h3>
+      <div class="desc">Holographic interface. Activate, analyze, sync. Local processing.</div>
+      <div class="tag core">● AI CORE</div>
+    </a>
+    <a href="memory-vault.html" class="app-card">
+      <div class="icon memory">💾</div>
+      <h3>Memory Vault</h3>
+      <div class="desc">Searchable, filterable local memory. Your data stays yours.</div>
+      <div class="tag memory">● MEMORY</div>
+    </a>
+    <a href="dashboard.html" class="app-card">
+      <div class="icon dashboard">📊</div>
+      <h3>Business Dashboard</h3>
+      <div class="desc">Virtual numbers, Vitalis inbox, appointments, analytics.</div>
+      <div class="tag dashboard">● DASHBOARD</div>
+    </a>
+  </div>
+  <div class="status">
+    <div>MODE: <b>LOCAL</b></div>
+    <div>AI: <b>READY</b></div>
+    <div>MEMORY: <b>ACTIVE</b></div>
+    <div>DASHBOARD: <b>ONLINE</b></div>
+  </div>
+
+  <!-- Mobile Nav Bar -->
+  <div class="mobile-nav">
+    <a href="#" class="nav-item">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Chats</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">📞</span>
+      <span class="nav-label">Calls</span>
+    </a>
+    <a href="ai-core.html" class="nav-item nav-center">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Core</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">◫</span>
+      <span class="nav-label">Wallet</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">◍</span>
+      <span class="nav-label">Me</span>
+    </a>
+  </div>
+</div>
+
+<style>
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 0;
+  background: rgba(5,5,7,.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  z-index: 100;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 600;
+  transition: .2s;
+  flex: 1;
+}
+.nav-item:hover { color: #fff; }
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 9px; letter-spacing: .06em; }
+.nav-center .nav-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-top: -20px;
+  box-shadow: 0 8px 30px rgba(122,92,255,.4);
+}
+.nav-center .nav-label { margin-top: 4px; }
+</style>
+</body>
+</html>
