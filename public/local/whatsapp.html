@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075E54">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="XTOBE WhatsApp">
+<title>XTOBE WhatsApp — Business</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;XTOBE WhatsApp&quot;,&quot;short_name&quot;:&quot;XTOBE&quot;,&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%23075E54&quot;,&quot;theme_color&quot;:&quot;%23075E54&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2325D366' width='100' height='100' rx='20'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>X</text></svg>&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--wa-green:#25D366;--wa-dark:#075E54;--wa-teal:#128C7E;--wa-light:#DCF8C6;--wa-bg:#ECE5DD;--wa-chat:#E5DDD5;--txt:#111;--dim:#667;--white:#fff}
+body{font-family:Inter,system-ui,sans-serif;background:var(--wa-bg);color:var(--txt);height:100vh;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--wa-chat);position:relative}
+/* Header */
+.header{background:var(--wa-dark);color:var(--white);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.header .back{font-size:20px;cursor:pointer;opacity:.8}
+.header .avatar{width:36px;height:36px;border-radius:50%;background:var(--wa-green);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--white)}
+.header .info{flex:1}
+.header .name{font-size:15px;font-weight:700}
+.header .status{font-size:11px;opacity:.7}
+.header .actions{display:flex;gap:16px;font-size:18px}
+/* Chat area */
+.chat-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--wa-chat)}
+.msg{max-width:75%;padding:8px 12px;border-radius:12px;font-size:13.5px;line-height:1.4;position:relative}
+.msg.in{background:var(--white);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:var(--wa-light);align-self:flex-end;border-bottom-right-radius:4px}
+.msg .time{font-size:9px;color:var(--dim);margin-top:4px;text-align:right}
+.msg .check{font-size:11px;color:var(--wa-teal);margin-left:4px}
+/* Input */
+.input-bar{background:var(--wa-bg);padding:10px 12px;display:flex;gap:8px;align-items:center;position:sticky;bottom:0}
+.input-bar input{flex:1;border:none;border-radius:24px;padding:12px 16px;font-size:14px;font-family:inherit;outline:none;background:var(--white)}
+.input-bar .send{width:44px;height:44px;border-radius:50%;background:var(--wa-green);border:none;color:var(--white);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.input-bar .send:hover{background:var(--wa-teal)}
+/* Status bar */
+.status-bar{background:var(--wa-dark);color:var(--white);padding:6px 16px;font-size:10px;display:flex;justify-content:space-between;align-items:center;opacity:.8}
+.status-bar .dot{width:6px;height:6px;border-radius:50%;background:var(--wa-green);display:inline-block;margin-right:4px}
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--dim)}
+.empty-state .icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--txt)}
+.empty-state p{font-size:12px;line-height:1.6}
+/* Connection indicator */
+.conn-indicator{position:fixed;top:0;left:0;right:0;height:3px;background:var(--wa-green);z-index:100;transition:background .3s}
+.conn-indicator.offline{background:#ef4444}
+.conn-indicator.connecting{background:#fbbf24}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="conn-indicator" id="connIndicator"></div>
+  <div class="status-bar">
+    <span><span class="dot"></span>XTOBE Business</span>
+    <span id="connText">CONNECTED</span>
+  </div>
+  <div class="header">
+    <span class="back" onclick="goBack()">←</span>
+    <div class="avatar">X</div>
+    <div class="info">
+      <div class="name">XTOBE Business</div>
+      <div class="status" id="headerStatus">online · +971 56 313 6305</div>
+    </div>
+    <div class="actions">
+      <span>📞</span>
+      <span>⋮</span>
+    </div>
+  </div>
+  <div class="chat-area" id="chatArea">
+    <div class="empty-state" id="emptyState">
+      <div class="icon">💬</div>
+      <h3>No messages yet</h3>
+      <p>Send a message to start the conversation.<br>Connected to live API.</p>
+    </div>
+  </div>
+  <div class="input-bar">
+    <input type="text" id="msgInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMessage()">
+    <button class="send" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+const API = '';
+const chatArea = document.getElementById('chatArea');
+const msgInput = document.getElementById('msgInput');
+const emptyState = document.getElementById('emptyState');
+const connIndicator = document.getElementById('connIndicator');
+const connText = document.getElementById('connText');
+const headerStatus = document.getElementById('headerStatus');
+
+// Load messages from API
+async function loadMessages() {
+  try {
+    const res = await fetch(API + '/api/inbox');
+    const data = await res.json();
+    if (!data.conversations || data.conversations.length === 0) {
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+    // Show first conversation messages
+    const conv = data.conversations[0];
+    const msgRes = await fetch(API + '/api/conversations/' + conv.id);
+    const msgData = await msgRes.json();
+    chatArea.innerHTML = '';
+    if (msgData.messages) {
+      msgData.messages.forEach(m => {
+        addMessage(m.body, m.direction === 'out', m.created_at);
+      });
+    }
+  } catch (e) {
+    console.log('API error:', e.message);
+  }
+}
+
+function addMessage(text, isOut, time) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + (isOut ? 'out' : 'in');
+  const timeStr = time ? new Date(time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+  div.innerHTML = `${text}<div class="time">${timeStr}${isOut ? ' ✓✓' : ''}</div>`;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  msgInput.value = '';
+  addMessage(text, true, new Date().toISOString());
+  emptyState.style.display = 'none';
+  try {
+    await fetch(API + '/api/send', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text: text})
+    });
+  } catch (e) {
+    console.log('Send error:', e.message);
+  }
+}
+
+function goBack() {
+  window.location.href = '/local/index.html';
+}
+
+// Connection loop
+async function checkConnection() {
+  try {
+    const res = await fetch(API + '/api/health');
+    const data = await res.json();
+    if (data.status === 'ok') {
+      connIndicator.className = 'conn-indicator';
+      connText.textContent = 'CONNECTED';
+      headerStatus.textContent = 'online · +971 56 313 6305';
+    } else {
+      connIndicator.className = 'conn-indicator connecting';
+      connText.textContent = 'CONNECTING';
+    }
+  } catch (e) {
+    connIndicator.className = 'conn-indicator offline';
+    connText.textContent = 'OFFLINE';
+    headerStatus.textContent = 'offline';
+  }
+}
+
+// Init
+loadMessages();
+checkConnection();
+setInterval(() => { loadMessages(); checkConnection(); }, 3000);
+</script>
+</body>
+</html>
