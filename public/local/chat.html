@@ -125,10 +125,34 @@ function openChat(id) {
   window.location.href = '/dashboard/';
 }
 
+// Live connection loop — checks API every 3s
+async function checkConnection() {
+  try {
+    const res = await fetch('/api/health');
+    const data = await res.json();
+    const statusEl = document.querySelector('.sim-status .text');
+    const dotEl = document.querySelector('.sim-status .dot');
+    if (data.status === 'ok') {
+      statusEl.textContent = 'eSIM ACTIVE — CONNECTED';
+      dotEl.style.background = 'var(--live)';
+      dotEl.style.boxShadow = '0 0 8px var(--live)';
+    } else {
+      statusEl.textContent = 'eSIM ACTIVE — RECONNECTING';
+      dotEl.style.background = 'var(--amber)';
+    }
+  } catch (e) {
+    const statusEl = document.querySelector('.sim-status .text');
+    const dotEl = document.querySelector('.sim-status .dot');
+    statusEl.textContent = 'eSIM ACTIVE — OFFLINE';
+    dotEl.style.background = 'var(--red)';
+  }
+}
+
 // Load on start
 loadChats();
-// Refresh every 5 seconds
-setInterval(loadChats, 5000);
+checkConnection();
+// Refresh every 3 seconds
+setInterval(() => { loadChats(); checkConnection(); }, 3000);
 </script>
 </body>
 </html>
