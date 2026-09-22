@@ -19,6 +19,8 @@ const aigateMod = require('./aigate');
 const videoMod = require('./video');
 const brandMod = require('./brand');
 const security = require('./security');
+const authShield = require('./authShield');
+const auth = require('./auth');
 const { VITALIS, BreathEngine, PressureEngine, CarrierEngine, LongevityEngine, CredentialEngine, initVitalisSchema } = require('./vitalis-engine');
 
 loadEnv(ROOT);
@@ -59,6 +61,36 @@ app.disable('x-powered-by');                       // don't advertise Express
 app.set('trust proxy', 1);                         // Render/CF terminate TLS → real client IP
 app.use(security.securityHeaders());               // XSS/clickjacking/MIME/HSTS headers
 app.use(express.json({ limit: '1mb', verify: security.captureRawBody }));
+
+/* ------------------------------------------------------------------ *
+ * Step 2 — API lockdown (SERVER_PATCH_1_THEN_2.md)
+ * Session auth on ALL /api/* except: webhook (HMAC-signed by Meta),
+ * health, brand/session (license issuer), vitalis public research,
+ * and /api/auth itself. Enforcement only when an admin is configured
+ * (ADMIN_PASSWORD in env seeds settings.admin_hash on first boot).
+ * ------------------------------------------------------------------ */
+auth.enable(auth.initAuth(db));
+app.use(auth.attachAuth);
+app.use(authShield.attachLoginRecorder()); // req._xtobeRecordLogin(ok) for login handlers
+app.use('/api/auth', auth.authRoutes(db));
+app.use('/api', auth.requireSession({
+  exempt: [
+    '/webhooks',
+    cfg.whatsappPath.replace(/^\/api/, ''),
+    '/health',
+    '/brand/session',
+    '/auth',
+    '/vitalis',
+  ],
+}));
+/* global limiter: 100 req/min per IP on ALL routes (static + api).
+   OPTIONS preflights and shield's /api limiter are unaffected. */
+app.use(authShield.globalLimiter());
+
+/* stricter limiter: 20 req/min per IP on the WhatsApp webhook and any auth routes
+   (mount future /auth/*, /session-auth/* under this same limiter). */
+app.use(cfg.whatsappPath, authShield.authLimiter());
+app.use(['/auth', '/session-auth', '/api/auth', '/api/session-auth'], authShield.authLimiter());
 
 /* rate-limit every API endpoint: 100 req/min per client (after body parse so
    x-clinic-id is available; OPTIONS preflights pass through for CORS) */
@@ -328,7 +360,55 @@ app.post('/api/send', async (req, res) => {
   const msg = addMessage(conv.id, 'out', text, {
     channel: conv.channel, status, providerId, meta: warning ? { warning } : null,
   });
-  res.json({ ok: true, status, providerId, warning, message: msg, conversation_id: conv.id });
+    res.json({ ok: true, status, providerId, warning, message: msg, conversation_id: conv.id });
+});
+
+/* Start a new conversation with a phone number (add number + new message).
+   Accepts { phone, name?, channel?, message? }. Creates the client +
+   conversation. If a message is supplied, it is sent immediately. */
+app.post('/api/conversations/start', async (req, res) => {
+  const b = req.body || {};
+  const phone = String(b.phone || '').replace(/\D/g, '');
+  if (!phone) {
+    return res.status(400).json({ ok: false, error: 'phone_required' });
+  }
+  const channel = b.channel || 'whatsapp';
+  const client = upsertClient(phone, b.name || null, channel);
+  const conv = upsertConversation(client.id, channel);
+
+  if (b.message) {
+    const text = String(b.message).slice(0, 4096);
+    let status = 'queued';
+    let providerId = null;
+    let warning = null;
+    if (conv.channel === 'whatsapp') {
+      try {
+        const out = await wa.sendWhatsApp(cfg, client.phone, text);
+        status = 'sent';
+        providerId = out.providerId;
+      } catch (err) {
+        status = 'failed';
+        warning = err.code === 'not_configured'
+          ? 'WhatsApp not configured yet — message saved locally only.'
+          : err.message;
+      }
+    } else {
+      warning = conv.channel + ' sending needs Meta App Review — message saved locally only.';
+    }
+    const msg = addMessage(conv.id, 'out', text, {
+      channel: conv.channel, status, providerId, meta: warning ? { warning } : null,
+    });
+    return res.json({
+      ok: true, conversation_id: conv.id, client_id: client.id,
+      client: clientView(client), conversation: { id: conv.id, channel: conv.channel },
+      message: msg, message_status: status, warning,
+    });
+  }
+
+  res.json({
+    ok: true, conversation_id: conv.id, client_id: client.id,
+    client: clientView(client), conversation: { id: conv.id, channel: conv.channel },
+  });
 });
 
 /* ------------------------------------------------------------------ *
@@ -427,7 +507,29 @@ app.patch('/api/clients/:id', (req, res) => {
     b.last_visit !== undefined ? b.last_visit : cur.last_visit,
     id
   );
-  res.json({ ok: true, client: clientView(db.prepare('SELECT * FROM clients WHERE id = ?').get(id)) });
+    res.json({ ok: true, client: clientView(db.prepare('SELECT * FROM clients WHERE id = ?').get(id)) });
+});
+
+/* Add a new contact by phone number. Rejects if the number already exists
+   (use PATCH /api/clients/:id to update an existing one, or
+   POST /api/conversations/start to begin messaging right away). */
+app.post('/api/clients', (req, res) => {
+  const b = req.body || {};
+  const phone = String(b.phone || '').replace(/\D/g, '');
+  if (!phone) {
+    return res.status(400).json({ ok: false, error: 'phone_required' });
+  }
+  const existing = db.prepare('SELECT * FROM clients WHERE phone = ?').get(phone);
+  if (existing) {
+    return res.status(409).json({ ok: false, error: 'already_exists', client_id: existing.id });
+  }
+  const info = db.prepare(
+    'INSERT INTO clients (phone, name, channel, created_at) VALUES (?, ?, ?, ?)'
+  ).run(phone, b.name || null, b.channel || 'whatsapp', nowIso());
+  res.status(201).json({
+    ok: true,
+    client: clientView(db.prepare('SELECT * FROM clients WHERE id = ?').get(info.lastInsertRowid)),
+  });
 });
 
 /* ------------------------------------------------------------------ *
@@ -678,6 +780,12 @@ app.get('/brand.js', (req, res) => {
   }
   const brand = Brand.getBranding((req.query.c || 'default'));
   res.type('application/javascript').send(Brand.applyScript(brand));
+});
+
+/* legal shield — DPA/ToS/Privacy + security.txt (safe harbor) */
+app.use('/legal', express.static(path.join(ROOT, 'legal'), { extensions: ['md'], setHeaders: (res) => res.setHeader('X-Content-Type-Options', 'nosniff') }));
+app.get('/.well-known/security.txt', (req, res) => {
+  res.type('text/plain').sendFile(path.join(ROOT, '.well-known', 'security.txt'));
 });
 
 /* ------------------------------------------------------------------ *

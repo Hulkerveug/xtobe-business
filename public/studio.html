@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/auth.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Studio — Xtobe Business</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#f5f5f7;color:#1d1d1f;min-height:100vh}
+  .top{background:#fff;border-bottom:1px solid #e8e8ed;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .top .brand{font-weight:900;font-size:17px;letter-spacing:-.02em}
+  .top .brand span{color:#0a84ff}
+  .top nav{display:flex;gap:6px}
+  .top nav a{color:#6e6e73;text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:10px}
+  .top nav a:hover{background:#f5f5f7;color:#1d1d1f}
+  .top .usage{display:flex;align-items:center;gap:8px;background:#f5f5f7;border-radius:99px;padding:7px 14px;font-size:12.5px;font-weight:700}
+  .meter{width:80px;height:8px;border-radius:99px;background:#e8e8ed;overflow:hidden}
+  .meter i{display:block;height:100%;background:linear-gradient(90deg,#0a84ff,#34c759);border-radius:99px}
+  .wrap{max-width:1060px;margin:0 auto;padding:32px 24px 80px}
+
+  /* hero */
+  .hero{background:linear-gradient(160deg,#0e0e10,#1c1c22);border-radius:26px;padding:36px;color:#fff;position:relative;overflow:hidden}
+  .hero .kick{font-size:11px;font-weight:800;letter-spacing:.2em;color:#0a84ff}
+  .hero h1{font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:10px}
+  .hero p{font-size:14.5px;color:rgba(255,255,255,.65);margin-top:10px;max-width:560px;line-height:1.6}
+  .hero .roi{position:absolute;right:28px;bottom:28px;background:rgba(10,132,255,.18);border:1px solid rgba(10,132,255,.45);border-radius:16px;padding:14px 18px;font-size:12.5px;font-weight:700}
+  .hero .roi b{display:block;font-size:19px;color:#fff;margin-top:3px}
+
+  /* upgrade wall */
+  .wall{background:#fff;border-radius:26px;padding:44px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06);margin-top:22px}
+  .wall .ic{font-size:52px}
+  .wall h2{font-size:24px;font-weight:900;margin-top:12px}
+  .wall p{font-size:14.5px;color:#6e6e73;margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+  .wall .btns{display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .btn{border:none;border-radius:16px;padding:15px 28px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+  .btn.p{background:#0a84ff;color:#fff}
+  .btn.p:hover{background:#0071e3}
+  .btn.g{background:#f5f5f7;color:#1d1d1f}
+  .wall .compare{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .opt{background:#f5f5f7;border-radius:18px;padding:20px;min-width:220px;text-align:left}
+  .opt h4{font-size:15px;font-weight:800}
+  .opt .p{font-size:24px;font-weight:900;margin-top:6px;color:#0a84ff}
+  .opt ul{list-style:none;margin-top:10px}
+  .opt li{font-size:12.5px;color:#6e6e73;padding:4px 0;display:flex;gap:7px}
+  .opt li::before{content:"✓";color:#34c759;font-weight:800}
+
+  /* studio grid */
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:20px;margin-top:22px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .panel{background:#fff;border-radius:22px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+  .panel h3{font-size:16px;font-weight:800}
+  .panel .hint{font-size:12.5px;color:#86868b;margin-top:4px}
+
+  /* drop zone */
+  .drop{margin-top:18px;border:2px dashed #d2d2d7;border-radius:18px;padding:34px 20px;text-align:center;cursor:pointer;transition:.2s;background:#fafafa}
+  .drop:hover,.drop.on{border-color:#0a84ff;background:#f0f7ff}
+  .drop .ic{font-size:38px}
+  .drop b{display:block;font-size:14px;margin-top:10px}
+  .drop span{font-size:12px;color:#86868b}
+
+  /* form */
+  .field{margin-top:16px}
+  .field label{font-size:12px;font-weight:700;color:#6e6e73;letter-spacing:.04em;text-transform:uppercase}
+  .field input,.field select,.field textarea{width:100%;margin-top:7px;border:1.5px solid #e8e8ed;border-radius:13px;padding:12px 14px;font-size:14px;font-family:inherit;background:#fff;color:#1d1d1f}
+  .field textarea{min-height:70px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#0a84ff}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+  .chip{border:1.5px solid #e8e8ed;background:#fff;border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+  .chip.on{background:#0a84ff;color:#fff;border-color:#0a84ff}
+
+  /* face lock badge */
+  .facelock{margin-top:16px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1px solid #c8e6c9;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+  .facelock .ic{font-size:26px}
+  .facelock b{font-size:13.5px;color:#1b5e20}
+  .facelock span{display:block;font-size:12px;color:#388e3c;margin-top:2px}
+
+  .generate{margin-top:20px;width:100%;background:linear-gradient(90deg,#0a84ff,#0071e3);color:#fff;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(10,132,255,.3)}
+  .generate:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+
+  /* right panel: status + preview */
+  .statusline{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:#6e6e73}
+  .dot{width:10px;height:10px;border-radius:50%;background:#c7c7cc}
+  .dot.live{background:#34c759;animation:pulse 1.2s infinite}
+  @keyframes pulse{50%{opacity:.4}}
+  .steps{margin-top:18px;display:flex;flex-direction:column;gap:0}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:10px 0;opacity:.4}
+  .step.on{opacity:1}
+  .step .n{width:28px;height:28px;border-radius:50%;background:#e8e8ed;color:#86868b;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step.on .n{background:#0a84ff;color:#fff}
+  .step.done .n{background:#34c759;color:#fff}
+  .step b{font-size:13.5px}
+  .step span{display:block;font-size:12px;color:#86868b;margin-top:2px}
+
+  .preview{margin-top:20px;background:#0e0e10;border-radius:18px;overflow:hidden;display:none}
+  .preview video{width:100%;display:block}
+  .preview .bar{padding:12px 16px;display:flex;gap:10px;justify-content:flex-end;background:rgba(255,255,255,.04)}
+  .preview .bar button{border:none;border-radius:12px;padding:10px 18px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+  .ok{background:#34c759;color:#fff}
+  .no{background:rgba(255,255,255,.12);color:#fff}
+
+  .captions{margin-top:16px;display:none}
+  .cap{background:#f5f5f7;border-radius:14px;padding:14px;margin-top:10px}
+  .cap .lbl{font-size:11px;font-weight:800;color:#86868b;letter-spacing:.08em}
+  .cap p{font-size:13.5px;margin-top:6px;line-height:1.6;white-space:pre-wrap}
+  .cap .tags{font-size:12.5px;color:#0a84ff;margin-top:8px;font-weight:600;word-spacing:4px}
+
+  .history{margin-top:22px}
+  .h-item{background:#fff;border-radius:16px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.04);margin-top:10px}
+  .h-item b{font-size:14px}
+  .h-item .st{font-size:12px;font-weight:800;padding:5px 12px;border-radius:99px}
+  .st.preview{background:#fff3cd;color:#856404}
+  .st.approved{background:#e8f5e9;color:#1b5e20}
+  .st.rejected{background:#fdecea;color:#b71c1c}
+  .st.failed{background:#fdecea;color:#b71c1c}
+
+  /* payment modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .mbox{background:#fff;border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center}
+  .mbox h3{font-size:19px;font-weight:900}
+  .mbox p{font-size:14px;color:#6e6e73;margin-top:10px;line-height:1.6}
+  .mbox .amt{font-size:38px;font-weight:900;color:#0a84ff;margin:16px 0}
+  .mbox .btns{display:flex;gap:10px;margin-top:20px}
+  .mbox .btns .btn{flex:1}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">xtobe<span>business</span> · AI Studio</div>
+  <nav>
+    <a href="/">Inbox</a>
+    <a href="/appointments">Bookings</a>
+    <a href="/content">Content</a>
+    <a href="/studio" style="color:#0a84ff;background:#f0f7ff">🎬 AI Studio</a>
+    <a href="/pricing">Plans</a>
+  </nav>
+  <div class="usage" id="usagePill">…</div>
+</div>
+
+<div class="wrap">
+
+  <!-- UPGRADE WALL (hidden for Elite/addon) -->
+  <div class="wall" id="upgradeWall" style="display:none">
+    <div class="ic">🎬</div>
+    <h2>Unlock AI Video Creator</h2>
+    <p>Turn one old promo video into unlimited fresh Reels — <b>same doctor's face, new offers</b>, English + Arabic captions, ready to post in 2 minutes.</p>
+    <div class="compare">
+      <div class="opt">
+        <h4>Addon — for your plan</h4>
+        <div class="p">AED 399<span style="font-size:13px;color:#86868b;font-weight:600">/mo</span></div>
+        <ul><li>8 AI videos every month</li><li>Extra videos AED 49</li><li>Cancel anytime</li></ul>
+        <button class="btn g" style="margin-top:14px;width:100%" onclick="buyAddon()">Add to my plan</button>
+      </div>
+      <div class="opt" style="border:2px solid #0a84ff">
+        <h4>Elite — everything</h4>
+        <div class="p">AED 1,999<span style="font-size:13px;color:#86868b;font-weight:600">/mo</span></div>
+        <ul><li>20 AI videos every month</li><li>Posting calendar + boost</li><li>Unlimited staff</li></ul>
+        <button class="btn p" style="margin-top:14px;width:100%" onclick="upgradeElite()">Upgrade to Elite</button>
+      </div>
+    </div>
+    <p style="margin-top:26px;font-size:13px">💡 1 patient = AED 400 · 1 AI video = AED 49 · <b>8x ROI on every video</b></p>
+  </div>
+
+  <!-- STUDIO -->
+  <div id="studio" style="display:none">
+    <div class="hero">
+      <div class="kick">AI VIDEO CREATOR</div>
+      <h1>Your doctor's face. New offers every week.</h1>
+      <p>Upload one old promotion video. AI writes the script, cuts the best 15 seconds, overlays your offer in English + Arabic — the face stays exactly the same. Your staff approves before anything goes out.</p>
+      <div class="roi">1 patient = AED 400 · 1 video = AED 49<b>8x ROI</b></div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: create -->
+      <div class="panel">
+        <h3>Create a video</h3>
+        <div class="hint">Upload → offer → generate → approve</div>
+
+        <div class="drop" id="drop" onclick="pick()">
+          <div class="ic">📤</div>
+          <b>Drop your old promo video</b>
+          <span>MP4, up to 60s — the one with the doctor's face</span>
+        </div>
+        <input type="file" id="file" accept="video/mp4,video/quicktime" style="display:none" onchange="fileChosen(this)">
+
+        <div class="field">
+          <label>Video name</label>
+          <input id="vName" placeholder="e.g. Hydrafacial promo">
+        </div>
+
+        <div class="field">
+          <label>This week's offer</label>
+          <textarea id="vOffer" placeholder="e.g. Hydrafacial AED 499 this week only — book by Friday"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Style</label>
+          <div class="chips" id="styleChips">
+            <div class="chip on" data-v="luxury" onclick="chip(this)">✨ Luxury</div>
+            <div class="chip" data-v="friendly" onclick="chip(this)">😊 Friendly</div>
+            <div class="chip" data-v="urgent" onclick="chip(this)">🔥 Limited time</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Captions</label>
+          <div class="chips" id="langChips">
+            <div class="chip on" data-v="en" onclick="chip(this)">🇬🇧 English</div>
+            <div class="chip" data-v="ar" onclick="chip(this)">🇦🇪 العربية</div>
+            <div class="chip" data-v="both" onclick="chip(this)">🌍 Both</div>
+          </div>
+        </div>
+
+        <div class="facelock">
+          <div class="ic">🔒</div>
+          <div><b>Face Lock — identity preserved 100%</b><span>The person in your video stays exactly the same. Only the offer changes.</span></div>
+        </div>
+
+        <button class="generate" id="genBtn" onclick="generate()" disabled>Generate video</button>
+      </div>
+
+      <!-- RIGHT: pipeline + preview -->
+      <div class="panel">
+        <div class="statusline"><div class="dot" id="dot"></div><span id="statusText">Waiting for upload</span></div>
+        <div class="steps" id="steps">
+          <div class="step" id="s1"><div class="n">1</div><div><b>Upload</b><span>Old promo video received</span></div></div>
+          <div class="step" id="s2"><div class="n">2</div><div><b>AI script</b><span>Hook, scenes, captions EN + AR, hashtags</span></div></div>
+          <div class="step" id="s3"><div class="n">3</div><div><b>Assemble</b><span>Cut, scale, overlay text — face untouched</span></div></div>
+          <div class="step" id="s4"><div class="n">4</div><div><b>Staff approval</b><span>Nothing posts until your team says yes</span></div></div>
+        </div>
+
+        <div class="preview" id="preview">
+          <video id="player" controls></video>
+          <div class="bar">
+            <button class="no" onclick="rejectV()">✖ Reject</button>
+            <button class="ok" onclick="approveV()">✓ Approve & finish</button>
+          </div>
+        </div>
+
+        <div class="captions" id="captions">
+          <div class="cap"><div class="lbl">CAPTION — ENGLISH</div><p id="capEn"></p><div class="tags" id="tagsEn"></div></div>
+          <div class="cap"><div class="lbl">CAPTION — العربية</div><p id="capAr" dir="rtl"></p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history">
+      <h3 style="font-size:16px;font-weight:800">Your videos</h3>
+      <div id="histList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- payment modal -->
+<div class="modal" id="payModal">
+  <div class="mbox">
+    <h3>Extra video</h3>
+    <p>You've used all your monthly videos. This one costs:</p>
+    <div class="amt">AED 49</div>
+    <p>1 patient = AED 400. This video pays for itself 8 times over.</p>
+    <div class="btns">
+      <button class="btn g" onclick="closePay()">Cancel</button>
+      <button class="btn p" onclick="payExtra()">Continue — AED 49</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let access = null, projectId = null, style = 'luxury', lang = 'en', fileName = null;
+
+async function init(){
+  const r = await fetch(API + '/api/ai/check-access?clinic_id=default').then(r=>r.json());
+  access = r;
+  renderUsage();
+  if (r.has_access) { document.getElementById('studio').style.display='block'; loadHistory(); }
+  else document.getElementById('upgradeWall').style.display='block';
+}
+
+function renderUsage(){
+  const u = document.getElementById('usagePill');
+  if (!access || !access.has_access) { u.innerHTML = '🔒 AI Creator locked'; return; }
+  const pct = Math.min(100, Math.round(access.used / access.limit * 100));
+  u.innerHTML = `🎬 ${access.used}/${access.limit} <div class="meter"><i style="width:${pct}%"></i></div>`;
+}
+
+function chip(el){ [...el.parentNode.children].forEach(c=>c.classList.remove('on')); el.classList.add('on'); 
+  if (el.parentNode.id==='styleChips') style = el.dataset.v; else lang = el.dataset.v; }
+
+function pick(){ document.getElementById('file').click(); }
+const drop = document.getElementById('drop');
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop', ev=>{ const f = ev.dataTransfer.files[0]; if (f) handleFile(f); });
+
+function fileChosen(inp){ if (inp.files[0]) handleFile(inp.files[0]); }
+
+function handleFile(f){
+  fileName = f.name;
+  document.getElementById('drop').innerHTML = `<div class="ic">✅</div><b>${f.name}</b><span>${(f.size/1048576).toFixed(1)} MB — tap to change</span>`;
+  document.getElementById('genBtn').disabled = false;
+  step('s1','on'); status('Video ready — set the offer and generate','live');
+}
+
+async function generate(){
+  if (!fileName) return;
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  step('s1','done');
+
+  // 1. register project (gate re-checked server-side)
+  let r = await fetch(API + '/api/videos/upload', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ source_file: fileName, name: document.getElementById('vName').value, offer_text: document.getElementById('vOffer').value, style, language: lang })}).then(r=>r.json());
+  if (r.code === 'PAYMENT_REQUIRED') { openPay(); btn.disabled=false; btn.textContent='Generate video'; return; }
+  if (r.code === 'UPGRADE_REQUIRED') { location.reload(); return; }
+  projectId = r.project.id;
+
+  // 2. run pipeline
+  step('s2','on'); status('AI writing your script…','live');
+  r = await fetch(API + `/api/videos/${projectId}/generate`, {method:'POST'}).then(r=>r.json());
+
+  if (r.code === 'PAYMENT_REQUIRED') { openPay(); return; }
+
+  if (r.ok) {
+    step('s2','done'); step('s3','done'); step('s4','on');
+    status('Ready for staff approval','live');
+    showPreview(r);
+  } else {
+    status('Failed: ' + (r.error||'unknown'), '');
+    btn.disabled=false; btn.textContent='Generate video';
+  }
+  await refreshAccess();
+}
+
+function showPreview(r){
+  const p = document.getElementById('preview');
+  p.style.display='block';
+  if (r.output) document.getElementById('player').src = r.output;
+  const proj = r.project || {};
+  const caps = document.getElementById('captions');
+  caps.style.display='block';
+  document.getElementById('capEn').textContent = proj.caption_en || '(caption)';
+  document.getElementById('capAr').textContent = proj.caption_ar || '(caption)';
+  document.getElementById('tagsEn').textContent = proj.hashtags || '';
+}
+
+async function approveV(){
+  if (!projectId) return;
+  await fetch(API + `/api/videos/${projectId}/approve`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({staff:'front desk'})});
+  step('s4','done'); status('Approved ✓ — ready to post','');
+  loadHistory();
+}
+async function rejectV(){
+  if (!projectId) return;
+  await fetch(API + `/api/videos/${projectId}/reject`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({reason:'needs changes'})});
+  status('Rejected — staff controls everything','');
+  loadHistory();
+}
+
+async function refreshAccess(){
+  access = await fetch(API + '/api/ai/check-access?clinic_id=default').then(r=>r.json());
+  renderUsage();
+}
+
+async function loadHistory(){
+  const r = await fetch(API + '/api/videos?limit=20').then(r=>r.json());
+  const box = document.getElementById('histList');
+  if (!r.projects || !r.projects.length) { box.innerHTML = '<div style="color:#86868b;font-size:13px;margin-top:10px">No videos yet — your first one appears here.</div>'; return; }
+  box.innerHTML = r.projects.map(p=>`
+    <div class="h-item"><div><b>${p.name||'Untitled'}</b><div style="font-size:12px;color:#86868b">${(p.created_at||'').slice(0,10)} · ${(p.offer_text||'').slice(0,50)}</div></div>
+    <span class="st ${p.status}">${p.status}</span></div>`).join('');
+}
+
+/* payment modal */
+function openPay(){ document.getElementById('payModal').style.display='flex'; }
+function closePay(){ document.getElementById('payModal').style.display='none'; }
+async function payExtra(){
+  await fetch(API + '/api/ai/confirm-extra', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({clinic_id:'default'})});
+  closePay(); generate();
+}
+
+/* upgrades */
+async function buyAddon(){
+  await fetch(API + '/api/ai/activate-addon', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({clinic_id:'default'})});
+  location.reload();
+}
+async function upgradeElite(){
+  await fetch(API + '/api/ai/set-plan', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({clinic_id:'default', plan:'elite'})});
+  location.reload();
+}
+
+function status(t, live){ document.getElementById('statusText').textContent = t; document.getElementById('dot').className = 'dot ' + (live||''); }
+function step(id, cls){ document.getElementById(id).className = 'step ' + cls; }
+
+init();
+</script>
+</body>
+</html>

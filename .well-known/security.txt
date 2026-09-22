@@ -1,0 +1,21 @@
+Contact: mailto:security@xtobe.ae
+Expires: 2027-09-22T00:00:00.000Z
+Encryption: https://xtobe.ae/.well-known/pgp-key.txt
+Preferred-Languages: en, ar
+Canonical: https://api.xtobe.ae/.well-known/security.txt
+
+# Safe harbor: XTOBE BUSINESS considers security research conducted in good
+# faith consistent with this policy authorized under UAE Federal Decree-Law
+# No. 34 of 2021 on Combatting Rumors and Cybercrimes (Art. 2). We will not
+# pursue legal action against researchers who:
+#   - only test against accounts/domains they own or have permission to test,
+#   - avoid privacy violations, data destruction, and service degradation,
+#   - report findings to security@xtobe.ae before any public disclosure.
+# Disclosure window: 90 days from report. Acknowledgement within 72 hours.
+
+# In scope:
+#   https://xtobe.ae, https://api.xtobe.ae, https://xtobe-business.onrender.com
+# Out of scope: spam/phishing via the platform, volumetric DoS, social engineering of staff.
+
+# Security controls in place: webhook HMAC verification, rate limiting,
+# brute-force lockout, session-based API lockdown, security headers, CSP.
