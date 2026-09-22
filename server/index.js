@@ -78,11 +78,59 @@ app.use('/api', auth.requireSession({
     '/webhooks',
     cfg.whatsappPath.replace(/^\/api/, ''),
     '/health',
-    '/brand/session',
+    '/brand',
     '/auth',
     '/vitalis',
   ],
 }));
+
+/* ------------------------------------------------------------------ *
+ * HTML serving + invisible license watermark (shield).
+ * Static files stream past res.send, so HTML is served through a
+ * patched res.send: meta x-license + license comment + POWERED BY
+ * XTOBE footer on EVERY page (required by .clinerules).
+ * Non-HTML assets still go through express.static untouched.
+ * ------------------------------------------------------------------ */
+const PUB_DIR = path.join(ROOT, 'public');
+const staticServe = express.static(PUB_DIR, { extensions: ['html'] });
+app.use((req, res, next) => {
+  if (shieldOn && typeof res.send === 'function' && !res.send.__xtobeWm) {
+    const origSend = res.send.bind(res);
+    const patched = function (body) {
+      try {
+        if (typeof body === 'string' && /<html|<!doctype/i.test(body)) {
+          const host = shield._internal.hostFromHeader(req.headers.referer || req.headers.origin) || (req.hostname || '');
+          const domain = shield._internal.matchedAllowedDomain(host) || (req.hostname || 'default');
+          const wm = shield.buildWatermark(String(req.query.c || 'default'), domain, new Date().toISOString().slice(0, 10));
+          let out = body;
+          if (/<\/head>/i.test(out)) out = out.replace(/<\/head>/i, wm.metaTag + '\n</head>');
+          if (/<body[^>]*>/i.test(out)) out = out.replace(/<body[^>]*>/i, (m) => m + '\n' + wm.htmlComment);
+          if (/<\/body>/i.test(out)) out = out.replace(/<\/body>/i, wm.footer + '\n</body>');
+          body = out;
+        }
+      } catch { /* watermarking must never break a page */ }
+      return origSend(body);
+    };
+    patched.__xtobeWm = true;
+    res.send = patched;
+  }
+  next();
+});
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return staticServe(req, res, next);
+  const p = req.path === '/' ? '/index.html' : req.path;
+  const cands = path.extname(p)
+    ? [p]
+    : [p.replace(/\/+$/, '') + '/index.html', p.replace(/\/+$/, '') + '.html'];
+  const file = cands
+    .map((c) => path.join(PUB_DIR, path.normalize(c).replace(/^([.][.][/\\])+/, '')))
+    .find((f) => { try { return fs.statSync(f).isFile() && f.endsWith('.html'); } catch { return false; } });
+  if (!file) return staticServe(req, res, next);
+  let html;
+  try { html = fs.readFileSync(file, 'utf8'); } catch { return staticServe(req, res, next); }
+  res.set('Cache-Control', 'no-store');
+  res.type('html').send(html);
+});
 /* global limiter: 100 req/min per IP on ALL routes (static + api).
    OPTIONS preflights and shield's /api limiter are unaffected. */
 app.use(authShield.globalLimiter());
@@ -767,6 +815,18 @@ app.get('/api/brand', (req, res) => {
 
 app.post('/api/brand', (req, res) => {
   res.json({ ok: true, brand: Brand.setBranding((req.body || {}).clinic_id || 'default', req.body || {}) });
+});
+
+/* white-label injection loader — only to whitelisted referers (no-store) */
+app.get('/injection.js', (req, res) => {
+  if (shieldOn) {
+    const host = shield._internal.hostFromHeader(req.headers.referer || req.headers.origin);
+    if (!shield._internal.isAllowedHost(host)) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    res.set('Cache-Control', 'no-store');
+  }
+  res.type('application/javascript').send(fs.readFileSync(path.join(ROOT, 'secure', 'injection.secure.js'), 'utf8'));
 });
 
 /* branding injection script — only served to whitelisted domains (no-store) */

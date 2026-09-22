@@ -22,3 +22,16 @@ Contact: +971 54 358 5550 | Currency: AED only
 - Marketing: "Your Doctor's Face, New Offers Every Week — AI in 2 mins"
 - ROI line: "1 patient = AED 400, 1 AI video = AED 49 = 8x ROI"
 - Unlock phrase required to change ANY price: "unlock pricing"
+
+## SECURITY — NEVER EXPOSE (anti-clone shield, LOCKED)
+- NEVER commit WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, WHATSAPP_APP_SECRET, LICENSE_SECRET, ADMIN_PASSWORD to Git — env only (Render Dashboard)
+- .env must stay in .gitignore; repo stays PRIVATE
+- In ALL res.json() responses never return secrets (hideSecrets/deep-strip in place)
+- LICENSE tokens = HMAC-SHA256(clinic_id|base_domain, LICENSE_SECRET) — verifyLicense on ALL /api/brand methods
+- /injection.js + /brand.js served ONLY to whitelisted Referer/Origin (ALLOWED_DOMAINS); no-store
+- Every HTML response carries invisible watermark: <meta name="x-license"> + license comment + POWERED BY XTOBE footer (server-side via static wrapper)
+- Rate limits: global 100 req/min per IP (all routes) + 20 req/min on auth/webhook; brute-force login lock 5 fails/15min -> 30min
+- All /api/* behind requireSession except: webhook (HMAC), health, brand/session, auth, vitalis
+- Legal served live: /legal/DPA.md, /legal/ToS.md, /legal/Privacy.md, /.well-known/security.txt
+
+If you skip any step, build FAILS security check.
