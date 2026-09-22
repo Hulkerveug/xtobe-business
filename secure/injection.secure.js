@@ -1,68 +1,70 @@
-'use strict';
 /**
- * Xtobe-2 — injection.secure.js — white-label frontend loader.
- * Served from /injection.js ONLY to whitelisted Referer/Origin domains.
- *
- * Flow:
- *   1. Clinic page includes: <script src="https://host/injection.js" defer></script>
- *   2. This script calls POST /api/brand/session (same-origin cookie/CORS) to get
- *      a license token bound to (clinic_id, base_domain) — the browser never
- *      sees LICENSE_SECRET.
- *   3. It fetches the clinic brand and applies: --brand-primary CSS var,
- *      [data-xtobe-logo], [data-xtobe-name], title, and the REQUIRED
- *      "POWERED BY XTOBE" footer (10px, 35% opacity) per license.
+ * XTOBE BUSINESS — SECURE INJECTION SCRIPT
+ * Served ONLY if Referer/Origin in ALLOWED_DOMAINS + valid token
+ * © 2026 XTOBE BUSINESS — Proprietary
  */
-(function () {
-  var API = (function () {
-    try { return new URL(document.currentScript.src).origin; } catch (e) { return ''; }
-  })();
+(function(){
+  const script = document.currentScript;
+  if (!script) return;
+  const clinicId = script.dataset.clinic || script.getAttribute('data-clinic') || 'default';
+  const token = script.dataset.token || script.getAttribute('data-token');
+  const apiBase = script.dataset.api || 'https://api.xtobe.ae'; // or https://xtobe-business.onrender.com
 
-  function post(url, body) {
-    return fetch(API + url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(body || {}),
-    });
+  if (!token) {
+    console.error('XTOBE: Missing data-token — get token via HMAC(clinic_id|domain, LICENSE_SECRET)');
+    return;
   }
 
-  function apply(brand) {
-    var primary = brand.primary || '#3E9EFF';
-    document.documentElement.style.setProperty('--brand-primary', primary);
-    document.documentElement.style.setProperty('--xtobe-primary', primary);
-    if (brand.accent) document.documentElement.style.setProperty('--brand-accent', brand.accent);
-    if (brand.name) document.title = brand.name + ' — ' + (brand.tagline || 'Clinic Growth Engine');
+  const headers = {
+    'x-clinic-id': clinicId,
+    'x-xtobe-license': token
+  };
 
-    document.querySelectorAll('[data-xtobe-logo]').forEach(function (el) {
-      if (el.tagName === 'IMG' && brand.logo_url) el.src = brand.logo_url;
-      else if (brand.logo_url) el.style.backgroundImage = 'url(' + brand.logo_url + ')';
-    });
-    document.querySelectorAll('[data-xtobe-name]').forEach(function (el) { el.textContent = brand.name || ''; });
+  fetch(`${apiBase}/api/brand/${encodeURIComponent(clinicId)}?token=${encodeURIComponent(token)}`, { headers })
+    .then(r=>{
+      if (!r.ok) throw new Error('License invalid '+r.status);
+      return r.json();
+    })
+    .then(brand=>{
+      // Apply brand
+      const primary = brand.primary || brand.primary_color || '#3E9EFF';
+      document.documentElement.style.setProperty('--primary', primary);
+      document.documentElement.style.setProperty('--xtobe-primary', primary);
 
-    if (!document.querySelector('[data-xtobe-powered]')) {
-      var f = document.createElement('div');
-      f.setAttribute('data-xtobe-powered', '1');
-      f.style.cssText = 'text-align:center;padding:8px;opacity:.35;font-size:10px;letter-spacing:.12em';
-      f.textContent = 'POWERED BY XTOBE';
-      document.body.appendChild(f);
-    }
-  }
+      if (brand.name) document.title = brand.name + ' | ' + (brand.tagline || "Growth Engine");
 
-  function boot() {
-    var clinicId = (document.querySelector('script[data-clinic]') || {}).dataset ? document.querySelector('script[data-clinic]').dataset.clinic : null;
-    post('/api/brand/session', { clinic_id: clinicId || 'default' })
-      .then(function (r) { if (!r.ok) throw new Error('session ' + r.status); return r.json(); })
-      .then(function (s) {
-        return fetch(API + '/api/brand?clinic_id=' + encodeURIComponent(s.clinic_id || 'default'), {
-          headers: { 'x-clinic-id': s.clinic_id || 'default', 'x-license-token': s.token },
-          credentials: 'include',
+      // Logo
+      const logoEls = document.querySelectorAll('[data-xtobe-logo]');
+      logoEls.forEach(el=>{
+        if (el.tagName === 'IMG') el.src = brand.logo_url || brand.logo;
+        else el.style.backgroundImage = `url(${brand.logo_url||brand.logo})`;
+      });
+
+      // Name
+      const nameEls = document.querySelectorAll('[data-xtobe-name]');
+      nameEls.forEach(el=>{ el.textContent = brand.name; });
+
+      // Colors
+      if (brand.colors) {
+        Object.entries(brand.colors).forEach(([k,v])=>{
+          document.documentElement.style.setProperty(`--${k}`, v);
         });
-      })
-      .then(function (r) { if (!r.ok) throw new Error('brand ' + r.status); return r.json(); })
-      .then(function (j) { apply(j.brand || j); })
-      .catch(function (e) { console.error('XTOBE: brand not applied —', e.message); });
-  }
+      }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+      // REQUIRED footer per license — 10px 35% opacity
+      if (!document.querySelector('[data-xtobe-powered]')) {
+        const footer = document.createElement('div');
+        footer.setAttribute('data-xtobe-powered','true');
+        footer.innerHTML = `<div style="font-size:10px;opacity:0.35;text-align:center;padding:8px;letter-spacing:0.5px;">POWERED BY XTOBE</div>`;
+        document.body.appendChild(footer);
+      }
+
+      // Invisible watermark already added server-side, add client confirmation
+      const meta = document.querySelector('meta[name="xtobe-license"]');
+      if (meta) console.log('XTOBE LICENSE', meta.content, 'clinic', clinicId);
+    })
+    .catch(e=>{
+      console.error('XTOBE: License verification failed — brand not applied', e);
+      // Do not apply brand, leave default
+    });
 })();

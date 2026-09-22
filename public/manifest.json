@@ -1,13 +1,1 @@
-{
-  "name": "Xtobe Business — Every client message. Every post. One system.",
-  "short_name": "xtobe business",
-  "description": "WhatsApp + Instagram inbox, AI bookings, AI video creator for UAE beauty clinics.",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#f5f5f7",
-  "theme_color": "#0a84ff",
-  "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
+{"name": "XTOBE BUSINESS PC Admin", "short_name": "XTOBE", "start_url": "/mobile.html", "display": "standalone", "background_color": "#0a0a0a", "theme_color": "#3E9EFF"}

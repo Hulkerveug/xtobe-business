@@ -53,6 +53,21 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;text-a
 .nav-item.active{color:var(--blue)}
 .nav-icon{font-size:18px}
 .nav-label{font-size:8px;letter-spacing:.04em}
+
+/* New Contact modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal-content{background:linear-gradient(180deg,#1a1a2e,#12121e);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px;width:90%;max-width:320px}
+.modal-content h3{font-size:16px;font-weight:700;margin-bottom:14px;text-align:center;color:#fff}
+.modal-content input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;padding:12px 14px;font-family:inherit;font-size:14px;outline:none;margin-bottom:10px}
+.modal-content input:focus{border-color:rgba(62,158,255,.4)}
+.modal-content input::placeholder{color:rgba(255,255,255,.3)}
+.modal-btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-top:4px}
+.modal-btn.secondary{background:transparent;color:rgba(255,255,255,.5);font-size:12px;padding:8px 16px;border-radius:10px}
+.modal-btn.secondary:hover{color:#fff}
+.modal-btn.primary{background:linear-gradient(135deg,#3E9EFF,#7a5cff);color:#000;font-weight:700}
+.modal-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(62,158,255,.3)}
+.modal-btn:disabled{opacity:.5;cursor:not-allowed}
+#phoneError{color:#ef4444;font-size:11px;margin-top:6px;display:none}
 </style>
 </head>
 <body>
@@ -68,19 +83,20 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;text-a
       <div class="battery"></div>
     </div>
     <div class="app-header">
-      <span class="title">Messages</span>
-      <div class="icons"><span>🔍</span><span>✏️</span></div>
+            <span class="title">Messages</span>
+      <div class="icons"><span onclick="openNewContactModal()" style="cursor:pointer;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.12);transition:.2s" title="Add contact">➕</span><span>🔍</span><span>✏️</span></div>
     </div>
     <div class="sim-status">
       <div class="dot"></div>
       <span class="text">eSIM ACTIVE</span>
       <span class="num">+971 56 313 6305</span>
     </div>
-    <div class="chat-list" id="chatList">
-      <div class="empty-chat">
+        <div class="chat-list" id="chatList">
+      <div class="empty-chat" id="emptyChat">
         <div style="font-size:32px;margin-bottom:12px">💬</div>
         <div>No conversations yet</div>
         <div style="margin-top:8px;font-size:11px">Messages will appear here when they arrive</div>
+        <button onclick="openNewContactModal()" style="margin-top:16px;padding:10px 24px;border-radius:14px;border:1px solid rgba(62,158,255,.3);background:rgba(62,158,255,.12);color:#3E9EFF;font-size:13px;font-weight:600;cursor:pointer">➕ Add Contact</button>
       </div>
     </div>
     <div class="nav-bar">

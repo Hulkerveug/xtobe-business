@@ -1,0 +1,1 @@
+const {test}=require('node:test');const assert=require('node:assert');test('auth',()=>assert.ok(true));

@@ -1,22 +1,33 @@
 services:
   - type: web
-    name: xtobe-business
+    name: xtobe
     runtime: node
-    plan: free
-    region: frankfurt
-    branch: main
+    plan: starter
     buildCommand: npm install
-    startCommand: node server/index.js
-    healthCheckPath: /api/health
+    startCommand: npm start
+    autoDeploy: true
+    healthCheckPath: /health
     envVars:
-      - key: NODE_VERSION
-        value: "22"
-      - key: WHATSAPP_VERIFY_TOKEN
-        value: "xtobe-verify-2026"
-      - key: AI_API_KEY
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ADMIN_PASSWORD
         sync: false
-      # anti-clone shield
       - key: LICENSE_SECRET
-        generateValue: true
-      - key: ALLOWED_DOMAINS
         sync: false
+      - key: WHATSAPP_APP_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ALLOWED_DOMAINS
+        value: xtobe.ae,api.xtobe.ae,xtobe-business.onrender.com
+      - key: SENTRY_DSN
+        sync: false
+      - key: RENDER_APP_URL
+        sync: false
+
+# Level 3: Auto-rollback via GitHub Action if /health fails
+# Set secrets in GitHub: RENDER_APP_URL, SLACK_WEBHOOK

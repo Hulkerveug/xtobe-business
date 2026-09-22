@@ -1,38 +1,42 @@
-# Data Processing Agreement (DPA)
-**XTOBE BUSINESS — Processor Agreement under UAE Federal Decree-Law No. 45 of 2021 (PDPL)**
-Version 1.0 — Effective 2026-09-22 — legal@xtobe.ae
+# DATA PROCESSING AGREEMENT (DPA)
+## XTOBE BUSINESS — UAE PDPL Federal Decree-Law No.45 of 2021
+Version 2.0 — 2026-09-22
 
-## 1. Roles
-- **Clinic** = Data Controller (determines purposes and means of processing patient/client data).
-- **XTOBE BUSINESS** = Data Processor (processes only on the Controller's documented instructions via the Platform).
+**Controller:** Clinic (you) — via POST /api/brand {clinic_id}
+**Processor:** XTOBE BUSINESS, Abu Dhabi, UAE — legal@xtobe.ae
 
-## 2. Scope of Processing
-XTOBE processes on the Controller's behalf: client contact data (name, masked phone number), conversation content (WhatsApp/Instagram/Facebook), appointment records, and lead data — solely to operate the inbox, booking, content studio, and lead features.
+**1. Roles**
+Clinic = Controller (determines purpose). XTOBE = Processor (processes on behalf). Per PDPL Art 1.
 
-## 3. Data Minimisation & Masking
-- Phone numbers are **masked in the UI** by default (`+971 5X XXX 1234`); full numbers are revealed only to the account holder.
-- Lead phone numbers are stored as **salted hashes + masked display values**.
-- XTOBE has no independent right to read, use, or retain Controller data beyond service delivery.
+**2. Data**
+- Masked phone (maskPhone) — raw phone never stored
+- First name, appointment time, consent timestamp + PIN, message content (WA/IG)
+- No diagnosis, no health record.
 
-## 4. Security Measures
-- Encryption in transit (TLS 1.2+); secrets held server-side only, never in client bundles.
-- Rate limiting, brute-force account lockout, webhook signature verification, and session-based API lockdown.
-- Access limited to personnel bound by confidentiality obligations.
+**3. Purpose**
+One inbox WA+IG → Render → Clinic, AI booking, reminders, AI content studio EN+AR, AI Video Creator Face Lock same exact face.
 
-## 5. Breach Notification
-XTOBE notifies the Controller **without undue delay and no later than 72 hours** after becoming aware of a personal data breach, with nature, scope, and remediation.
+**4. Processor Obligations**
+- Process only on documented instructions (dashboard approvals — your staff approves everything)
+- Encryption at rest + in transit, Render 24/7
+- Consent log /accept + PIN for Meta + DHA proof
+- Breach notice to Controller within 72h
+- /unlink deletion within 30 days
+- Sub-processors: Render (hosting), Meta WhatsApp Cloud API (delivery) — with SCC
+- Retention: 12 months after termination then deletion
 
-## 6. Sub-processors
-Hosting (Render/Cloud provider) and Meta (WhatsApp Cloud API) act as sub-processors. Controller consent to this DPA constitutes consent to the current sub-processor list. Changes will be notified in advance.
+**5. Controller Obligations**
+- Obtain consent before adding to WhatsApp
+- Comply with DHA/DoH/MOHAP for health data
+- Reference XTOBE as processor in your privacy notice
 
-## 7. Data Subject Requests (/unlink)
-Controllers can trigger deletion of a data subject's records via the `/unlink` request (email to privacy@xtobe.ae or in-product). XTOBE completes deletion or anonymisation **within 30 days** and confirms in writing, except where retention is legally required.
+**6. White-Label**
+THEIR name/logo/colors. Footer POWERED BY XTOBE 10px 35% opacity required per license.
 
-## 8. Retention & Deletion
-On termination, Controller data is exportable for 30 days, then deleted/anonymised within 90 days unless law requires longer.
+**7. Liability**
+Processor liability capped to 3 months fees. No indirect loss. B2B.
 
-## 9. Liability
-Liability is limited per the ToS. XTOBE is not liable for Controller's unlawful instructions.
+**8. Term**
+Effective on brand creation. Ends on termination.
 
-## 10. Governing Law
-UAE Federal Decree-Law No. 45 of 2021 (PDPL) and applicable UAE federal law. Disputes: UAE courts at the place of XTOBE's registered office.
+Electronically signed via dashboard acceptance — per E-Transactions Law 46/2021.

@@ -1,0 +1,56 @@
+name: XTOBE AI Level 3 CI Deploy Auto-Rollback Signature XTOBE-AI-PC-ADMIN-v2
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+      - name: Verify security modules
+        run: |
+          test -f secure/antiCloneShield.js
+          test -f secure/authShield.js
+          test -f secure/webhookVerify.js
+          test -f .well-known/security.txt
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Render autoDeploy true - push triggers deploy"
+  health-check:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 90
+      - name: Health check
+        run: |
+          URL="${{ secrets.RENDER_APP_URL }}/health"
+          for i in {1..10}; do
+            CODE=$(curl -s -o /tmp/h.json -w "%{http_code}" $URL || echo 000)
+            echo "Attempt $i HTTP $CODE"
+            cat /tmp/h.json
+            if [ "$CODE" = "200" ] && grep -q '"status":"ok"' /tmp/h.json; then exit 0; fi
+            sleep 15
+          done
+          exit 1
+  rollback:
+    needs: health-check
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Auto-rollback
+        run: |
+          git config user.name "XTOBE AI"
+          git config user.email "ai@xtobe.ae"
+          git revert --no-edit HEAD || git reset --hard HEAD~1
+          git push origin main --force-with-lease

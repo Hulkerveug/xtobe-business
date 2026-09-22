@@ -1,23 +1,23 @@
 {
-  "name": "xtobe-2",
-  "version": "1.0.0",
-  "description": "Xtobe-2 — one inbox, AI booking and content studio for UAE beauty clinics",
+  "name": "xtobe-ai",
+  "version": "2.0.0",
+  "description": "XTOBE BUSINESS PC Admin Model Signature XTOBE-AI-PC-ADMIN-v2 Level 3 Render Ready",
   "main": "server/index.js",
-  "type": "commonjs",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node server/index.js"
-  },
-  "engines": {
-    "node": ">=18"
+    "test": "node --test tests/*.test.js"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
-    "express": "^4.19.2"
+    "express": "4.18.2",
+    "express-rate-limit": "7.1.5",
+    "bcryptjs": "2.4.3",
+    "jsonwebtoken": "9.0.2",
+    "cors": "2.8.5",
+    "dotenv": "16.3.1",
+    "helmet": "7.1.0",
+    "cookie-parser": "1.4.6",
+    "@sentry/node": "8.0.0"
   },
-  "allowScripts": {
-    "better-sqlite3": true
-  },
-  "license": "MIT",
-  "private": true
+  "author": "XTOBE BUSINESS Signature XTOBE-AI-PC-ADMIN-v2",
+  "license": "UNLICENSED"
 }
