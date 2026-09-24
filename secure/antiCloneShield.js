@@ -153,14 +153,31 @@ function hideSecrets(req, res, next) {
   next();
 }
 
+// Compat aliases for older server builds (bcdc1c1 lockdown) — maps to current shield API
+function hostFromHeader(h) {
+  if (!h) return '';
+  try { return new URL(h).hostname.toLowerCase(); } catch { return ''; }
+}
+function matchedAllowedDomain(rawHost) {
+  const h = String(rawHost || '').toLowerCase();
+  if (!h) return '';
+  const found = ALLOWED_DOMAINS.find(d => h === d || h.endsWith('.' + d) || h.includes(d));
+  if (found) return found;
+  if (h.includes('localhost') || h.includes('127.0.0.1')) return 'localhost';
+  return '';
+}
+function isAllowedHost(h) { return !!matchedAllowedDomain(h); }
+
 module.exports = {
   verifyLicense,
   secureBrandInjection,
   addInvisibleWatermark,
   limiter,
+  rateLimiter: limiter,
   hideSecrets,
   generateLicenseToken,
   generateWatermarkHash,
   isDomainAllowed,
-  ALLOWED_DOMAINS
+  ALLOWED_DOMAINS,
+  _internal: { hostFromHeader, matchedAllowedDomain, isAllowedHost }
 };
