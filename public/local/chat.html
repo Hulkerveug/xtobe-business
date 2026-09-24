@@ -108,7 +108,52 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;text-a
   </div>
 </div>
 
+<div class="modal-overlay" id="contactModal" style="display:none">
+  <div class="modal-content">
+    <h3>Add WhatsApp contact</h3>
+    <input id="contactName" placeholder="Name" autocomplete="name">
+    <input id="contactPhone" placeholder="Phone with country code" inputmode="tel" autocomplete="tel">
+    <div id="phoneError"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button class="modal-btn secondary" onclick="closeNewContactModal()">Cancel</button>
+      <button class="modal-btn primary" id="saveContact" onclick="saveContact()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
+function openNewContactModal() {
+  document.getElementById('contactModal').style.display = 'flex';
+  document.getElementById('contactName').focus();
+}
+
+function closeNewContactModal() {
+  document.getElementById('contactModal').style.display = 'none';
+  document.getElementById('phoneError').style.display = 'none';
+}
+
+async function saveContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const phone = document.getElementById('contactPhone').value.trim();
+  const error = document.getElementById('phoneError');
+  const button = document.getElementById('saveContact');
+  button.disabled = true;
+  try {
+    const res = await fetch('/api/contacts', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, phone}) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Could not save contact');
+    closeNewContactModal();
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactPhone').value = '';
+    loadChats();
+  } catch (err) {
+    error.textContent = err.message;
+    error.style.display = 'block';
+  } finally {
+    button.disabled = false;
+  }
+}
+
 // Load real conversations from API
 async function loadChats() {
   try {

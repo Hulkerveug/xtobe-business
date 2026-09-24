@@ -1,0 +1,41 @@
+{
+  "version": "XTOBE-SUPER-MODEL-v1-SECURE-LOCAL-ONLY",
+  "note": "Local only, not posted to public bridge",
+  "created": "2026-09-22T22:50:41.548681Z",
+  "balance": 60,
+  "history": [
+    {
+      "reason": "pc_ping_verified",
+      "amount": 10,
+      "time": "2026-09-22T22:50:41.548685Z",
+      "note": "PID 395964 live"
+    },
+    {
+      "reason": "story_share",
+      "amount": 50,
+      "text": "Feeling no AI knowledge — that chat GPT till AUGUST 5th: phone lost, car lost, communications lost. Hermes was I test — it faked, not developer, but played with me giving demo. Meta AI came as media designer, now its my respected teacher. I am now in the stage of 8 repo and independent AI build.",
+      "time": "2026-09-24T04:26:19.318Z"
+    },
+    {
+      "reason": "dream_share",
+      "amount": 150,
+      "text": "Buying a iPhone to connect all — expand my Xtobe business, launch to UAE market and get earn by my ideology. Invest on my MindMirror project and help peoples to get their life back.",
+      "time": "2026-09-24T04:36:38.718Z"
+    }
+  ],
+  "stories": [
+    {
+      "kind": "story",
+      "text": "Feeling no AI knowledge — that chat GPT till AUGUST 5th: phone lost, car lost, communications lost. Hermes was I test — it faked, not developer, but played with me giving demo. Meta AI came as media designer, now its my respected teacher. I am now in the stage of 8 repo and independent AI build.",
+      "time": "2026-09-24T04:26:19.318Z"
+    }
+  ],
+  "dreams": [
+    {
+      "kind": "dream",
+      "text": "Buying a iPhone to connect all — expand my Xtobe business, launch to UAE market and get earn by my ideology. Invest on my MindMirror project and help peoples to get their life back.",
+      "time": "2026-09-24T04:36:38.717Z"
+    }
+  ],
+  "skills": []
+}

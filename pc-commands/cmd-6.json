@@ -1,0 +1,8 @@
+{
+  "id": 6,
+  "type": "read_file",
+  "path": "pc-agent/data/tokens.json",
+  "timestamp": 1790223474290,
+  "from": "meta-ai",
+  "signature": "XTOBE-AI-PC-ADMIN-v2"
+}

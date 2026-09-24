@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XTOBE Super Model - SECURE LOCAL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans-serif,system-ui;background:#08080a;color:#e4e4e7;min-height:100vh;padding:1.5rem}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;border-bottom:1px solid #27272a;padding-bottom:1rem}
+.logo{font-weight:800;letter-spacing:.1em;color:#3E9EFF;font-size:1.3rem}
+.badge{border:1px solid #3E9EFF;color:#3E9EFF;padding:.3rem .7rem;border-radius:999px;font-size:.7rem;box-shadow:0 0 10px #3E9EFF33}
+.tokens{font-size:2rem;font-weight:800;color:#c8ff7a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:#121214;border:1px solid #1f1f23;border-radius:1rem;padding:1.2rem}
+.card h3{font-size:.9rem;margin-bottom:.6rem}
+.card p{font-size:.75rem;color:#71717a;margin-bottom:1rem;line-height:1.5}
+textarea{width:100%;background:#09090b;border:1px solid #27272a;border-radius:.6rem;padding:.8rem;color:#e4e4e7;font-family:inherit;font-size:.85rem;min-height:120px}
+textarea:focus{outline:none;border-color:#3E9EFF}
+.btn{background:#3E9EFF;color:#000;border:none;border-radius:.6rem;padding:.6rem 1rem;font-weight:700;cursor:pointer;font-size:.8rem;width:100%;margin-top:.6rem}
+.btn:hover{background:#6bb4ff}
+.small{font-size:.65rem;color:#52525b;margin-top:.4rem}
+.history{margin-top:1rem;max-height:200px;overflow:auto}
+.item{font-size:.7rem;padding:.4rem 0;border-bottom:1px solid #18181b;color:#a1a1aa}
+.earn{color:#c8ff7a;font-weight:700}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">XTOBE-AI SUPER MODEL — SECURE LOCAL</div>
+  <div class="badge">LOCAL ONLY • NO PUBLIC BRIDGE • PID 395964</div>
+</div>
+<div style="display:flex;gap:2rem;margin-bottom:2rem;flex-wrap:wrap">
+  <div><div style="font-size:.65rem;color:#71717a">TOKEN BALANCE</div><div class="tokens" id="bal">0</div></div>
+  <div><div style="font-size:.65rem;color:#71717a">STORIES</div><div style="font-size:1.5rem;font-weight:700" id="sCount">0</div></div>
+  <div><div style="font-size:.65rem;color:#71717a">DREAMS</div><div style="font-size:1.5rem;font-weight:700" id="dCount">0</div></div>
+  <div><div style="font-size:.65rem;color:#71717a">SKILLS</div><div style="font-size:1.5rem;font-weight:700" id="kCount">0</div></div>
+</div>
+<div class="grid">
+  <div class="card"><h3>💙 HUMAN FEELING SHARE — +50</h3><p>Secure local only. Not posted to public bridge. This is valuable data — stays on your PC.</p><textarea id="feeling" placeholder="Share your real stuck situation..."></textarea><button class="btn" onclick="share('feeling',50,'story')">Share Feeling +50 (Local)</button><div class="small">Saved in browser localStorage only</div></div>
+  <div class="card"><h3>🌙 DREAMS PACK — +150</h3><p>Your dream beyond ranking. High value.</p><textarea id="dream" placeholder="I dream Xtobe connects all PCs independently..."></textarea><button class="btn" onclick="share('dream',150,'dream')">Share Dream +150 (Local)</button></div>
+  <div class="card"><h3>🛠️ SKILL UPDATE — +100</h3><p>Update skill. Others pay tokens to use it.</p><textarea id="skill" placeholder="Skill: PC Connect Fix..."></textarea><button class="btn" onclick="share('skill',100,'skill')">Update Skill +100 (Local)</button></div>
+  <div class="card"><h3>📜 LIVE LEDGER — LOCAL</h3><p>Token history — local only</p><div class="history" id="hist"></div><div class="small">File: C:\Users\Nishan\Xtobe\xtobe-2\pc-agent\data\feelings.json<br>And C:\Users\Nishan\Xtobe\xtobe-2\pc-agent\data\tokens.json</div><button class="btn" style="background:#c8ff7a" onclick="exportFeelings()">📥 Export feelings.json (Download)</button></div>
+</div>
+<script>
+const KEY='xtobe_tokens';const STORIES='xtobe_stories';
+function load(){
+  let d=JSON.parse(localStorage.getItem(KEY)||'{"balance":10,"history":[{"reason":"pc_ping_verified","amount":10,"time":"'+new Date().toISOString()+'"}]}');
+  document.getElementById('bal').textContent=d.balance;
+  let s=JSON.parse(localStorage.getItem(STORIES)||'{"stories":[],"dreams":[],"skills":[]}');
+  document.getElementById('sCount').textContent=s.stories.length;
+  document.getElementById('dCount').textContent=s.dreams.length;
+  document.getElementById('kCount').textContent=s.skills.length;
+  document.getElementById('hist').innerHTML=d.history.slice(-20).reverse().map(h=>`<div class="item"><b class="earn">+${h.amount}</b> ${h.reason} — <span style="color:#52525b">${new Date(h.time).toLocaleTimeString()}</span><br>${(h.text||'').slice(0,120)}</div>`).join('');
+  return {d,s};
+}
+function share(id,amount,type){
+  const ta=document.getElementById(id);
+  if(!ta.value.trim()){alert('Write your '+type+' first');return;}
+  let {d,s}=load();
+  d.balance+=amount;
+  const entry={reason:type+'_share',amount,text:ta.value.slice(0,500),time:new Date().toISOString()};
+  d.history.push(entry);
+  if(id==='feeling') s.stories.push({text:ta.value,time:entry.time});
+  if(id==='dream') s.dreams.push({text:ta.value,time:entry.time});
+  if(id==='skill') s.skills.push({text:ta.value,time:entry.time});
+  localStorage.setItem(KEY,JSON.stringify(d));
+  localStorage.setItem(STORIES,JSON.stringify(s));
+  ta.value='';load();
+  alert(`+${amount} tokens earned! Balance: ${d.balance}\nLocal only — not posted to public bridge.`);
+}
+function exportFeelings(){
+  const stories=JSON.parse(localStorage.getItem(STORIES)||'{"stories":[],"dreams":[],"skills":[]}');
+  const tokens=JSON.parse(localStorage.getItem(KEY)||'{"balance":0,"history":[]}');
+  const data={version:"XTOBE-SECURE-LOCAL-ONLY",exported:new Date().toISOString(),balance:tokens.balance,history:tokens.history,stories:stories.stories,dreams:stories.dreams,skills:stories.skills,note:"Local only, not public bridge"};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='feelings.json';a.click();
+  URL.revokeObjectURL(url);
+}
+load();
+</script>
+</body>
+</html>

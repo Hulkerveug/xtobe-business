@@ -60,6 +60,32 @@ async function sendWhatsApp(cfg, to, text) {
   return { ok: true, providerId, raw: res };
 }
 
+/**
+ * Send a WhatsApp TEMPLATE message. REQUIRED for first contact or outside
+ * the 24h customer-service window (free text is rejected by Meta there).
+ * The template (default: hello_world) must exist on your WhatsApp Business app.
+ */
+async function sendWhatsAppTemplate(cfg, to, templateName, lang) {
+  if (!cfg.whatsappToken || !cfg.whatsappPhoneId) {
+    const err = new Error('WHATSAPP_TOKEN / WHATSAPP_PHONE_ID not configured');
+    err.code = 'not_configured';
+    throw err;
+  }
+  const res = await graphPost(
+    WA_API_HOST,
+    `/${WA_API_VER}/${cfg.whatsappPhoneId}/messages`,
+    cfg.whatsappToken,
+    {
+      messaging_product: 'whatsapp',
+      to: String(to).replace(/\D/g, ''),
+      type: 'template',
+      template: { name: String(templateName || 'hello_world'), language: { code: lang || 'en_US' } },
+    }
+  );
+  const providerId = res && res.messages && res.messages[0] ? res.messages[0].id : null;
+  return { ok: true, providerId, raw: res };
+}
+
 /** Parse Meta webhook entries → [{from, text, name, channel, phoneId}] */
 function parseWebhook(payload) {
   const out = [];
@@ -116,4 +142,4 @@ function maskPhone(digits) {
   return `+${cc} ${mid} ${last4}`.replace(/\s+/g, ' ').trim();
 }
 
-module.exports = { sendWhatsApp, parseWebhook, maskPhone, graphPost, WA_API_VER };
+module.exports = { sendWhatsApp, sendWhatsAppTemplate, parseWebhook, maskPhone, graphPost, WA_API_VER };

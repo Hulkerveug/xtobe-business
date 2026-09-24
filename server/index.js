@@ -274,6 +274,21 @@ app.post(cfg.whatsappPath, security.verifyWhatsAppSignature(cfg.whatsappAppSecre
   }
 });
 
+/* Admin test-send — first contact MUST be a pre-approved Meta template.
+   Session-guarded by the /api lockdown above. Body: { to, template? } */
+app.post('/api/send-test', async (req, res) => {
+  const to = String((req.body && req.body.to) || '').replace(/\D/g, '');
+  if (to.length < 8) return res.status(400).json({ ok: false, error: 'invalid_to' });
+  const template = String((req.body && req.body.template) || 'hello_world');
+  try {
+    const out = await wa.sendWhatsAppTemplate(cfg, to, template);
+    res.json({ ok: true, providerId: out.providerId });
+  } catch (err) {
+    const status = err.code === 'not_configured' ? 503 : 502;
+    res.status(status).json({ ok: false, error: err.code || 'send_failed', detail: String(err.message).slice(0, 200) });
+  }
+});
+
 
 /* ------------------------------------------------------------------ *
  * routes — inbox + send
