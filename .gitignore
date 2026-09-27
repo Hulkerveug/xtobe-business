@@ -12,6 +12,8 @@ data/*.db-shm
 data/*.db-wal
 data/*.sqlite
 data/*.sqlite3
+# Paddle license ledger — contains customer emails + issued keys, local only
+data/licenses.json
 
 coverage/
 dist/
