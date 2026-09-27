@@ -18,6 +18,8 @@ const leadsMod = require('./leads');
 const aigateMod = require('./aigate');
 const videoMod = require('./video');
 const brandMod = require('./brand');
+const paddle = require('./paddle');
+const paddleRoutes = require('./paddleRoutes');
 const security = require('./security');
 const authShield = require('./authShield');
 const auth = require('./auth');
@@ -53,6 +55,13 @@ const cfg = {
   clinicName: (process.env.CLINIC_NAME || 'Xtobe Demo Clinic').trim(),
   currency: (process.env.CLINIC_CURRENCY || 'AED').trim(),
   whatsappAppSecret: (process.env.WHATSAPP_APP_SECRET || '').trim(),
+  /* Paddle Billing (real payments). Prices come from env: PADDLE_PRICE_LIFETIME=pri_... */
+  paddleWebhookSecret: (process.env.PADDLE_WEBHOOK_SECRET || '').trim(),
+  paddleApiKey: (process.env.PADDLE_API_KEY || '').trim(),
+  paddleApiBase: (process.env.PADDLE_API_BASE || 'https://api.paddle.com').trim(),
+  paddlePrices: paddle.priceMap(process.env),
+  licenseSecret: (process.env.LICENSE_SECRET || '').trim(),
+  licenseFile: path.resolve(ROOT, process.env.LICENSE_FILE || 'data/licenses.json'),
 };
 
 const db = connect(cfg.dbFile);
@@ -81,6 +90,7 @@ app.use('/api', auth.requireSession({
     '/brand/session',
     '/auth',
     '/vitalis',
+    '/checkout',   // public pricing page → Paddle hosted checkout (rate-limited)
   ],
 }));
 /* global limiter: 100 req/min per IP on ALL routes (static + api).
@@ -288,6 +298,11 @@ app.post('/api/send-test', async (req, res) => {
     res.status(status).json({ ok: false, error: err.code || 'send_failed', detail: String(err.message).slice(0, 200) });
   }
 });
+
+
+/* Paddle billing routes (webhook / checkout / ledger) live in
+   server/paddleRoutes.js — keeps this file inside the 800-900 line guard. */
+paddleRoutes(app, cfg, paddle);
 
 
 /* ------------------------------------------------------------------ *
@@ -828,6 +843,7 @@ if (require.main === module) {
     console.log(`  whatsapp hook  http://localhost:${cfg.port}${cfg.whatsappPath}`);
     console.log(`  whatsapp       ${w ? 'configured' : 'NOT configured (set WHATSAPP_TOKEN + WHATSAPP_PHONE_ID)'}`);
     console.log(`  ai studio      ${cfg.aiKey ? 'live key' : 'offline templates (set AI_API_KEY)'}`);
+    console.log(`  paddle         ${cfg.paddleWebhookSecret ? 'webhook ON' : 'NOT configured (set PADDLE_WEBHOOK_SECRET)'} · ${Object.keys(cfg.paddlePrices).length} price(s)`);
     console.log(`  database       ${path.relative(ROOT, cfg.dbFile)}`);
     console.log('');
   });
