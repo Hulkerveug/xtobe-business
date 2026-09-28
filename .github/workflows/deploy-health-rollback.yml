@@ -33,7 +33,7 @@ jobs:
       - run: sleep 90
       - name: Health check
         run: |
-          URL="${{ secrets.RENDER_APP_URL }}/health"
+          URL="${{ secrets.RENDER_APP_URL }}/api/health"
           for i in {1..10}; do
             CODE=$(curl -s -o /tmp/h.json -w "%{http_code}" $URL || echo 000)
             echo "Attempt $i HTTP $CODE"
