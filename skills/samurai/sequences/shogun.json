@@ -1,0 +1,13 @@
+{
+  "soldier": "shogun",
+  "language": "python",
+  "intent": "Survey the whole empire before issuing orders. Reads only.",
+  "steps": [
+    { "n": 1, "name": "Read the banner of the empire", "kind": "internal", "op": "core.banner", "critical": true },
+    { "n": 2, "name": "Muster every soldier", "kind": "internal", "op": "empire.roster", "critical": true },
+    { "n": 3, "name": "Count the inbuilt skills", "kind": "internal", "op": "skills.summary", "critical": false },
+    { "n": 4, "name": "Verify the hash chain", "kind": "internal", "op": "audit.verify", "critical": true },
+    { "n": 5, "name": "Parley with the Hermes bridge", "kind": "internal", "op": "bridge.status", "critical": false },
+    { "n": 6, "name": "Confirm iOS consent state", "kind": "internal", "op": "ios.consent", "critical": false }
+  ]
+}

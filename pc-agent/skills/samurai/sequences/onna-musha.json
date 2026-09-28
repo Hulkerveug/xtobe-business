@@ -1,0 +1,11 @@
+{
+  "soldier": "onna-musha",
+  "language": "typescript",
+  "intent": "Ride both horses: build the TypeScript/Capacitor shell for phone and browser.",
+  "steps": [
+    { "n": 1, "name": "Node answers", "kind": "shell", "language": "javascript", "cmd": ["node", "--version"], "requires": "node", "critical": false },
+    { "n": 2, "name": "npm answers", "kind": "shell", "language": "javascript", "cmd": ["npm", "--version"], "requires": "npm", "critical": false },
+    { "n": 3, "name": "Panel is standalone", "kind": "internal", "op": "panel.audit", "critical": true },
+    { "n": 4, "name": "Build the existing xtobe-app shell", "kind": "shell", "language": "typescript", "cwd": "C:/Users/Nishan/Xtobe/XTOBE-Projects/xtobe-app", "cmd": ["npm", "run", "build"], "requires": "npm", "timeout": 600, "critical": false, "hint": "Run npm install in that folder once if node_modules is absent." }
+  ]
+}

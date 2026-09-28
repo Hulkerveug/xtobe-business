@@ -1,0 +1,13 @@
+{
+  "soldier": "ninja",
+  "language": "python",
+  "intent": "Scout silently: confirm the loopback doctrine, the skill corpus and the local endpoints before any build.",
+  "steps": [
+    { "n": 1, "name": "Read the banner", "kind": "internal", "op": "core.banner", "critical": true },
+    { "n": 2, "name": "Reload the inbuilt skill corpus", "kind": "internal", "op": "skills.reload", "critical": true },
+    { "n": 3, "name": "Probe local model endpoints", "kind": "shell", "language": "python", "cwd": "shadow-core", "cmd": ["python", "model_router.py"], "requires": "python", "critical": false },
+    { "n": 4, "name": "Verify the hash chain", "kind": "internal", "op": "audit.verify", "critical": true },
+    { "n": 5, "name": "Check Hermes engine", "kind": "internal", "op": "bridge.hermes_health", "critical": false },
+    { "n": 6, "name": "Check iOS consent gate", "kind": "internal", "op": "ios.consent", "critical": false }
+  ]
+}

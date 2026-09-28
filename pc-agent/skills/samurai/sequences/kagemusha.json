@@ -1,0 +1,12 @@
+{
+  "soldier": "kagemusha",
+  "language": "tauri",
+  "intent": "Stand in as the double: produce a self-contained mirror of the whole empire with a manifest.",
+  "steps": [
+    { "n": 1, "name": "Panel is standalone", "kind": "internal", "op": "panel.audit", "critical": true },
+    { "n": 2, "name": "Forge the mirror", "kind": "internal", "op": "kagemusha.mirror", "critical": true },
+    { "n": 3, "name": "Manifest exists", "kind": "assert_file", "path": "dist/shadow-mirror/MIRROR_MANIFEST.json", "critical": true },
+    { "n": 4, "name": "Empire roster intact", "kind": "internal", "op": "empire.roster", "critical": true },
+    { "n": 5, "name": "Seal the ledger", "kind": "internal", "op": "audit.verify", "critical": true }
+  ]
+}

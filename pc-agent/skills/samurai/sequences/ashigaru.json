@@ -1,0 +1,13 @@
+{
+  "soldier": "ashigaru",
+  "language": "html",
+  "intent": "Hold the front line: prove the HTML/CSS/JS panel is complete and dependency-free.",
+  "steps": [
+    { "n": 1, "name": "Panel shell exists", "kind": "assert_file", "path": "panel/index.html", "critical": true },
+    { "n": 2, "name": "Panel skin exists", "kind": "assert_file", "path": "panel/app.css", "critical": true },
+    { "n": 3, "name": "Panel logic exists", "kind": "assert_file", "path": "panel/app.js", "critical": true },
+    { "n": 4, "name": "No CDN, no remote URL", "kind": "internal", "op": "panel.audit", "critical": true },
+    { "n": 5, "name": "Node answers", "kind": "shell", "language": "javascript", "cmd": ["node", "--version"], "requires": "node", "critical": false },
+    { "n": 6, "name": "Syntax-check the panel logic", "kind": "shell", "language": "javascript", "cmd": ["node", "--check", "panel/app.js"], "requires": "node", "critical": false }
+  ]
+}

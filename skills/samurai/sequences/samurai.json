@@ -1,0 +1,12 @@
+{
+  "soldier": "samurai",
+  "language": "rust",
+  "intent": "Draw the blade: verify the Rust core and compile the backend crate.",
+  "steps": [
+    { "n": 1, "name": "Cargo present", "kind": "shell", "language": "rust", "cmd": ["cargo", "--version"], "requires": "cargo", "critical": false },
+    { "n": 2, "name": "Compiler present", "kind": "shell", "language": "rust", "cmd": ["rustc", "--version"], "requires": "rustc", "critical": false },
+    { "n": 3, "name": "Audit chain unbroken", "kind": "internal", "op": "audit.verify", "critical": true },
+    { "n": 4, "name": "Compile the shadow-core crate", "kind": "shell", "language": "rust", "cmd": ["cargo", "build", "--manifest-path", "src-tauri/Cargo.toml"], "requires": "cargo", "timeout": 1800, "critical": false },
+    { "n": 5, "name": "Warn on lint violations", "kind": "shell", "language": "rust", "cmd": ["cargo", "clippy", "--manifest-path", "src-tauri/Cargo.toml"], "requires": "cargo", "timeout": 1800, "critical": false, "hint": "Needs the clippy component: rustup component add clippy" }
+  ]
+}
