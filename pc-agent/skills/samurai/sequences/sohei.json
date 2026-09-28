@@ -1,0 +1,12 @@
+{
+  "soldier": "sohei",
+  "language": "python",
+  "intent": "Guard the doctrine: prove nothing was edited, nothing leaks, nothing is bypassed.",
+  "steps": [
+    { "n": 1, "name": "Hash chain unbroken", "kind": "internal", "op": "audit.verify", "critical": true },
+    { "n": 2, "name": "Skill corpus intact", "kind": "internal", "op": "skills.summary", "critical": true },
+    { "n": 3, "name": "Consent file present", "kind": "assert_file", "path": "ios/consent.json", "critical": true },
+    { "n": 4, "name": "Recite the refusal list", "kind": "internal", "op": "ios.never", "critical": true },
+    { "n": 5, "name": "Hermes skill sync plan (dry)", "kind": "internal", "op": "bridge.plan", "critical": false }
+  ]
+}

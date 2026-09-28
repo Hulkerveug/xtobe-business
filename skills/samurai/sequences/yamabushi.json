@@ -1,0 +1,16 @@
+{
+  "soldier": "yamabushi",
+  "language": "powershell",
+  "intent": "Test the ground before the army marches: audit every tool the empire depends on.",
+  "steps": [
+    { "n": 1, "name": "cargo", "kind": "shell", "language": "rust", "cmd": ["cargo", "--version"], "requires": "cargo", "critical": false },
+    { "n": 2, "name": "rustc", "kind": "shell", "language": "rust", "cmd": ["rustc", "--version"], "requires": "rustc", "critical": false },
+    { "n": 3, "name": "node", "kind": "shell", "language": "javascript", "cmd": ["node", "--version"], "requires": "node", "critical": false },
+    { "n": 4, "name": "npm", "kind": "shell", "language": "javascript", "cmd": ["npm", "--version"], "requires": "npm", "critical": false },
+    { "n": 5, "name": "python", "kind": "shell", "language": "python", "cmd": ["python", "--version"], "requires": "python", "critical": false },
+    { "n": 6, "name": "powershell", "kind": "shell", "language": "powershell", "cmd": ["powershell", "-NoProfile", "-NonInteractive", "-Command", "$PSVersionTable.PSVersion.ToString()"], "requires": "powershell", "critical": false },
+    { "n": 7, "name": "tauri cli", "kind": "shell", "language": "tauri", "cmd": ["cargo", "tauri", "--version"], "requires": "cargo-tauri", "critical": false, "hint": "cargo install tauri-cli" },
+    { "n": 8, "name": "pymobiledevice3", "kind": "shell", "language": "python", "cmd": ["python", "-m", "pymobiledevice3", "--version"], "requires": "python", "critical": false, "hint": "python -m pip install pymobiledevice3" },
+    { "n": 9, "name": "Desktop shell scaffolding present", "kind": "assert_dir", "path": "src-tauri", "critical": true }
+  ]
+}

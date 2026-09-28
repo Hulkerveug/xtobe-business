@@ -1,0 +1,13 @@
+{
+  "skills_dir": "skills/",
+  "skills": [
+    "prompt-engineering.md",
+    "e2e-deep-creative.md",
+    "samurai.md",
+    "skill-protect-files.md"
+  ],
+  "guard_rules": [
+    "file-guard-strict.js"
+  ],
+  "total": 4
+}

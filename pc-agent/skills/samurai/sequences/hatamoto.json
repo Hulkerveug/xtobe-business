@@ -1,0 +1,13 @@
+{
+  "soldier": "hatamoto",
+  "language": "tauri",
+  "intent": "Carry the banner: prove the panel is standalone, then honestly report the desktop-shell release state. Never fetches, never uploads.",
+  "steps": [
+    { "n": 1, "name": "Panel carries no external banners", "kind": "internal", "op": "panel.audit", "critical": true },
+    { "n": 2, "name": "Tauri config present", "kind": "assert_file", "path": "src-tauri/tauri.conf.json", "critical": true },
+    { "n": 3, "name": "Tauri crate manifest present", "kind": "assert_file", "path": "src-tauri/Cargo.toml", "critical": true },
+    { "n": 4, "name": "Rust toolchain answers", "kind": "shell", "language": "rust", "cmd": ["cargo", "--version"], "requires": "cargo", "critical": false },
+    { "n": 5, "name": "Compile the desktop shell (long march)", "kind": "shell", "language": "rust", "cmd": ["cargo", "build", "--release", "--manifest-path", "src-tauri/Cargo.toml"], "requires": "cargo", "timeout": 1800, "critical": false, "hint": "First build downloads crates into the local cargo cache and takes many minutes. SHADOW treats download progress as information, not failure." },
+    { "n": 6, "name": "Record release evidence", "kind": "internal", "op": "release.prepare", "critical": false }
+  ]
+}

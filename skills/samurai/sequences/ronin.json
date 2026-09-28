@@ -1,0 +1,11 @@
+{
+  "soldier": "ronin",
+  "language": "powershell",
+  "intent": "Serve without a master: standalone PowerShell automation, read-only by default.",
+  "steps": [
+    { "n": 1, "name": "PowerShell answers", "kind": "shell", "language": "powershell", "cmd": ["powershell", "-NoProfile", "-NonInteractive", "-Command", "$PSVersionTable.PSVersion.ToString()"], "requires": "powershell", "critical": false },
+    { "n": 2, "name": "Show who is listening on the SHADOW port", "kind": "shell", "language": "powershell", "cmd": ["powershell", "-NoProfile", "-NonInteractive", "-Command", "Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object LocalPort -eq 8790 | Select-Object -First 5 LocalAddress,LocalPort | ConvertTo-Json -Compress"], "requires": "powershell", "critical": false },
+    { "n": 3, "name": "Count the empire's files", "kind": "shell", "language": "powershell", "cmd": ["powershell", "-NoProfile", "-NonInteractive", "-Command", "(Get-ChildItem -Recurse -File 'C:\\Users\\Nishan\\workspace\\xtobe-shadow' -ErrorAction SilentlyContinue).Count"], "requires": "powershell", "critical": false },
+    { "n": 4, "name": "Verify the hash chain", "kind": "internal", "op": "audit.verify", "critical": true }
+  ]
+}

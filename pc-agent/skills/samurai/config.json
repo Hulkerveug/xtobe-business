@@ -1,0 +1,36 @@
+{
+  "version": "1.1",
+  "backends": {
+    "a1111": {
+      "base_url": "http://127.0.0.1:7860",
+      "api_version": "v1",
+      "default_steps": 30,
+      "default_cfg": 7,
+      "default_sampler": "Euler a",
+      "default_width": 1024,
+      "default_height": 1024,
+      "lora_path": "models/Lora",
+      "model_path": "models/Stable-diffusion"
+    },
+    "comfyui": {
+      "base_url": "http://127.0.0.1:8188",
+      "workflows_path": "Workflows",
+      "output_path": "output",
+      "default_steps": 30,
+      "default_cfg": 7,
+      "default_sampler": "euler"
+    },
+    "mock": {
+      "enabled": true,
+      "description": "No server needed - generates mock responses"
+    }
+  },
+  "default_backend": "a1111",
+  "default_batch": 9,
+  "default_chaos": 0.4,
+  "safety": {
+    "dry_run_default": true,
+    "network_forbidden": true,
+    "local_only": true
+  }
+}
