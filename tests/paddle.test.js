@@ -215,6 +215,7 @@ test('live: signed webhook issues + revokes a license; unsigned rejected; ledger
       PADDLE_API_BASE: 'http://127.0.0.1:9',
       PADDLE_PRICE_LIFETIME: 'pri_life_123',
       LICENSE_SECRET: LIC_SECRET,
+      ADMIN_PASSWORD: 'test_admin_pass',
       NODE_ENV: 'test',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
